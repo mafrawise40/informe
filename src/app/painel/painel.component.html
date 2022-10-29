@@ -1,0 +1,166 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-danger">
+                        <h4 class="card-title">Informações no Mapa</h4>
+                        <p class="card-category">Complete your profile</p>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput type="text" name="campoPesquisa" id="campoPesquisa"
+                                            formControlName="campoPesquisa" placeholder="Digite aqui para pesquisar">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-3">
+                                    <mat-form-field appearance="fill">
+                                        <mat-label>Insira um intervalo de datas</mat-label>
+                                        <mat-date-range-input [formGroup]="dataRange" [rangePicker]="picker">
+                                            <input matStartDate formControlName="start" placeholder="Data Inicial">
+                                            <input matEndDate formControlName="end" aplceholder="Data Final">
+                                        </mat-date-range-input>
+                                        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+                                        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                        <mat-date-range-picker #picker></mat-date-range-picker>
+
+                                        <mat-error *ngIf="dataRange.controls.start.hasError('matStartDateInvalid')">
+                                            Início inválido</mat-error>
+                                        <mat-error *ngIf="dataRange.controls.end.hasError('matEndDateInvalid')">Fim
+                                            inválido</mat-error>
+                                    </mat-form-field>
+                                </div>
+
+                            </div>
+
+                            <button mat-raised-button class="btn btn-danger " (click)="pesquisar();">Pesquisar</button>
+                            <div class="clearfix"></div>
+                        </form>
+
+
+
+                        <agm-map [latitude]="lat" [longitude]="lng" [zoom]="17" [mapTypeId]=""
+                            (mapClick)="marcadorClick($event)">
+
+                            <!-- MARCADOS JÀ SALVOS NO SISTEMA -->
+                            <agm-marker [latitude]="lat" [longitude]="lng" [label]="'Nome de tal Suspeito'">
+                                <agm-info-window [isOpen]="true">
+                                    <p style="font: 100px; color: black;"> Suspeito fulano de tal <strong
+                                            style="color: red;">Faccionado</strong>
+                                    </p>
+                                    <p style=" color: black;"> 20/09/2022 - 18:50 </p>
+                                    <p style=" color: blue;"><a href="#">Detalhes</a></p>
+                                </agm-info-window>
+                            </agm-marker>
+
+                            <agm-marker [latitude]="-15.894942262437418" [longitude]="-47.79147111458223"
+                                [label]="'Veículo Suspeito - XXX-2322'">
+                                <agm-info-window [isOpen]="true">
+                                    <p style=" color: black;"> Veículo suspeito </p>
+                                    <p style=" color: black;"> Placa: <strong>XXX-2322</strong></p>
+                                    <p style=" color: black;"> 20/09/2022 - 17:50 </p>
+                                    <p style=" color: blue;"><a target="_blank" href="https://www.google.com/maps/search/?api=1&query=-15.910372295089774%2C-47.75393828609365">Abrir no mapa</a></p>
+                                </agm-info-window>
+                            </agm-marker>
+
+                            <agm-marker [latitude]="-15.896651603307133" [longitude]="-47.78069001631342"
+                                [label]="'Furto em Comércio'">
+                                <agm-info-window [isOpen]="true">
+                                    <p style=" color: black;"> Furto em Comércio - Casa do Construtor </p>
+                                    <p style=" color: black;"> Endereço: ........ </p>
+                                    <p style=" color: black;"> <strong>Ocorrência: </strong> link genesis</p>
+                                    <p style=" color: black;"> 20/09/2022 - 17:50 </p>
+                                    <p style=" color: blue;"><a href="#">Detalhes</a></p>
+                                </agm-info-window>
+                            </agm-marker>
+
+                            <agm-marker [latitude]="-15.896382621715055" [longitude]="-47.790359172861116"
+                                [label]="'Traficante'">
+                                <agm-info-window [isOpen]="true">
+                                    <p style=" color: black;"> Tráfico de Drogas</p>
+                                    <p style=" color: black;"> Endereço: ........ </p>
+                                    <p style=" color: black;"> <strong>Pessoas: </strong> <a
+                                            [routerLink]="['/pessoa/editar/1']">Fulano 01</a>, <a href="#">Fulano 02</a>
+                                    </p>
+                                    <p style=" color: black;"> 20/09/2022 - 17:50 </p>
+                                    <p style=" color: blue;"><a href="#">Detalhes</a></p>
+                                </agm-info-window>
+                            </agm-marker>
+
+                            !-- MARCADOR DE PERGUNTAS -->
+                            <ng-container *ngIf="latMenu !== 0;">
+                                <agm-marker [latitude]="latMenu" [longitude]="longMenu"
+                                    [iconUrl]="'http://maps.google.com/mapfiles/kml/pal3/icon59.png'" [color]="blue">
+                                    <agm-info-window [isOpen]="true">
+                                        <p style=" color: black;"><a
+                                                [routerLink]="['/informacao/cadastrar', latMenu , longMenu]">Inserir
+                                                Informação
+                                                Nesse Local</a></p>
+                                        <p style=" color: black;"><a
+                                                [routerLink]="['/veiculo/cadastrar' , latMenu , longMenu]">Inserir
+                                                Veículo
+                                                Suspeito Nesse Local</a></p>
+                                        <p style=" color: black;"><a
+                                                [routerLink]="['/pessoa/cadastrar' , latMenu , longMenu]">Inserir Pessoa
+                                                Abordada
+                                                Nesse Local</a></p>
+
+                                    </agm-info-window>
+                                </agm-marker>
+                            </ng-container>
+
+
+
+
+                            <!-- Marcador de Veículos -->
+                            <ng-container *ngIf="marcadoresVeiculos !== null && marcadoresVeiculos.length > 0">
+                                <agm-marker *ngFor="let marcadorVeiculo of marcadoresVeiculos"
+                                    [latitude]="marcadorVeiculo.marcador.latitude"
+                                    [longitude]="marcadorVeiculo.marcador.longitude"
+                                    [iconUrl]="'http://maps.google.com/mapfiles/kml/pal4/icon7.png'"
+                                    [title]="'Veículo em situação suspeita'">
+                                    <agm-info-window [isOpen]="marcadorVeiculo.marcador.isOpen">
+                                        <p style=" color: black;">{{marcadorVeiculo.descricao}}</p>
+                                        <p style=" color: black;"><strong>Placa: </strong>{{marcadorVeiculo.placa}}</p>
+                                        <p style=" color: black;">{{marcadorVeiculo.observacao}}</p>
+                                        <p style=" color: black;">{{marcadorVeiculo.marcador.dataAtualizacao |
+                                            date:'medium' : "" : 'pt-BR'}}</p>
+
+
+                                    </agm-info-window>
+                                </agm-marker>
+                            </ng-container>
+
+                            <!-- Marcador de Informações -->
+                           
+                                <agm-marker *ngFor="let informe of marcadoresInforme"
+                                    [latitude]="informe.marcador.latitude"
+                                    [longitude]="informe.marcador.longitude"
+                                    [iconUrl]="'http://maps.google.com/mapfiles/kml/pal4/icon7.png'"
+                                    [title]="'Informação'">
+                                    <agm-info-window [isOpen]="informe.marcador.isOpen">
+                                        <p style=" color: black;">{{informe.titulo}}</p>
+                                        <p style=" color: black;">{{informe.informacao}}</p>
+                                        <p style=" color: black;">{{informe.dataAtualizacao | date:'medium' : "" : 'pt-BR'}}</p>
+                                        <p style=" color: blue;"><a target="_blank" href="https://www.google.com/maps/search/?api=1&query={{informe.marcador.latitude}}%2C{{informe.marcador.longitude}}">Abrir no mapa</a></p>
+                                    </agm-info-window>
+                                </agm-marker>
+
+
+
+                            
+
+
+                        </agm-map>
+
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

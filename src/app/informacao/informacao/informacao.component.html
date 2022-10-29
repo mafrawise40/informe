@@ -1,0 +1,139 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-danger">
+                        <h4 class="card-title">Cadastro de Informação</h4>
+                        <p class="card-category">Conte os detalhes das informações</p>
+                    </div>
+                    <div class="card-body">
+                        <form [formGroup]="formulario">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <!-- <label>Título Resumido</label> -->
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Título Resumido" name="titulo" id="titulo"
+                                            formControlName="titulo">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-md-3">
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Informação detalhada</label>
+                                    <mat-form-field class="Informação Completa">
+                                        <textarea rows="5" matInput
+                                            placeholder="Escreva aqui toda a informação necessária" name="informacao"
+                                            id="informacao" formControlName="informacao"></textarea>
+                                    </mat-form-field>
+
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Pessoas Envolvidas</label>
+                                    <mat-form-field class="example-chip-list" appearance="fill">
+                                        <mat-label>Pessoas</mat-label>
+                                        <mat-chip-list #chipListPessoas aria-label="Pessoa seleção">
+                                            <mat-chip *ngFor="let pessoa of pessoas" (removed)="remove(pessoa)">
+                                                {{pessoa.name}}
+                                                <button matChipRemove>
+                                                    <mat-icon>cancel</mat-icon>
+                                                </button>
+                                            </mat-chip>
+                                            <input placeholder="Nova Pessoa..." [matChipInputFor]="chipListPessoas"
+                                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                [matChipInputAddOnBlur]="addOnBlur"
+                                                (matChipInputTokenEnd)="add($event)">
+                                        </mat-chip-list>
+                                    </mat-form-field>
+
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label>Veículos Envolvidos</label>
+                                    <mat-form-field class="example-chip-list" appearance="fill">
+                                        <mat-label>Veículos</mat-label>
+                                        <mat-chip-list #chipListVeiculos aria-label="Veículo seleção">
+                                            <mat-chip *ngFor="let veiculo of veiculos"
+                                                (removed)="removeVeiculo(veiculo)">
+                                                {{veiculo.name}}
+                                                <button matChipRemove>
+                                                    <mat-icon>cancel</mat-icon>
+                                                </button>
+                                            </mat-chip>
+                                            <input placeholder="Novo veículo..." [matChipInputFor]="chipListVeiculos"
+                                                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                                [matChipInputAddOnBlur]="addOnBlur"
+                                                (matChipInputTokenEnd)="addVeiculo($event)">
+                                        </mat-chip-list>
+                                    </mat-form-field>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Endereço" name="endereco" id="endereco"
+                                            formControlName="endereco">
+                                    </mat-form-field>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <mat-form-field class="example-full-width">
+                                        <input matInput placeholder="Região" name="regiao" id="regiao"
+                                            formControlName="regiao">
+                                    </mat-form-field>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label>Informe a localização no mapa</label>
+                                    <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" [mapTypeId]=""
+                                        (mapClick)="marcadorClick($event)">
+
+                                        <agm-marker 
+                                        *ngFor="let m of markers; let i = index"
+                                        (markerClick)="clickedMarker(m.label, i)"
+                                        [latitude]="m.lat"
+                                        [longitude]="m.lng"
+                                        [label]="m.label"
+                                        [markerDraggable]="m.draggable"
+                                        >
+                                        
+                                      <agm-info-window>
+                                        <strong>InfoWindow content</strong>
+                                      </agm-info-window>
+                                      
+                                    </agm-marker>
+                                    </agm-map>
+                                </div>
+                            </div>
+
+
+                        </form>
+                    </div>
+
+                    <div class="card-body">
+
+                        <button (click)="salvar()" mat-raised-button type="submit"
+                            class="btn btn-danger pull-center">Salvar</button>
+                        <div class="clearfix"></div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
