@@ -66,6 +66,9 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'painel',        component: PainelComponent },
     { path: 'informacao/cadastrar',        component: InformacaoComponent },
     { path: 'informacao/cadastrar/:latitude/:longitude',        component: InformacaoComponent },
+    { path: 'informacao/cadastrar/:latitude/:longitude/:tipoInformacao',        component: InformacaoComponent },
+    { path: 'informacao/editar/:id',        component: InformacaoComponent },
     { path: 'informacao/consultar',        component: InformacaoConsultarComponent },
+   
     
 ];

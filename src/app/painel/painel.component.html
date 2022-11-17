@@ -8,7 +8,7 @@
                         <p class="card-category">Complete your profile</p>
                     </div>
                     <div class="card-body">
-                        <form>
+                        <form [formGroup]="formulario">
                             <div class="row">
                                 <div class="col-md-5">
                                     <mat-form-field class="example-full-width">
@@ -42,112 +42,72 @@
 
 
 
-                        <agm-map [latitude]="lat" [longitude]="lng" [zoom]="17" [mapTypeId]=""
+                        <agm-map [latitude]="lat" [longitude]="lng" [zoom]="15" [mapTypeId]=""
                             (mapClick)="marcadorClick($event)">
 
-                            <!-- MARCADOS JÀ SALVOS NO SISTEMA -->
-                            <agm-marker [latitude]="lat" [longitude]="lng" [label]="'Nome de tal Suspeito'">
-                                <agm-info-window [isOpen]="true">
-                                    <p style="font: 100px; color: black;"> Suspeito fulano de tal <strong
-                                            style="color: red;">Faccionado</strong>
-                                    </p>
-                                    <p style=" color: black;"> 20/09/2022 - 18:50 </p>
-                                    <p style=" color: blue;"><a href="#">Detalhes</a></p>
-                                </agm-info-window>
-                            </agm-marker>
-
-                            <agm-marker [latitude]="-15.894942262437418" [longitude]="-47.79147111458223"
-                                [label]="'Veículo Suspeito - XXX-2322'">
-                                <agm-info-window [isOpen]="true">
-                                    <p style=" color: black;"> Veículo suspeito </p>
-                                    <p style=" color: black;"> Placa: <strong>XXX-2322</strong></p>
-                                    <p style=" color: black;"> 20/09/2022 - 17:50 </p>
-                                    <p style=" color: blue;"><a target="_blank" href="https://www.google.com/maps/search/?api=1&query=-15.910372295089774%2C-47.75393828609365">Abrir no mapa</a></p>
-                                </agm-info-window>
-                            </agm-marker>
-
-                            <agm-marker [latitude]="-15.896651603307133" [longitude]="-47.78069001631342"
-                                [label]="'Furto em Comércio'">
-                                <agm-info-window [isOpen]="true">
-                                    <p style=" color: black;"> Furto em Comércio - Casa do Construtor </p>
-                                    <p style=" color: black;"> Endereço: ........ </p>
-                                    <p style=" color: black;"> <strong>Ocorrência: </strong> link genesis</p>
-                                    <p style=" color: black;"> 20/09/2022 - 17:50 </p>
-                                    <p style=" color: blue;"><a href="#">Detalhes</a></p>
-                                </agm-info-window>
-                            </agm-marker>
-
-                            <agm-marker [latitude]="-15.896382621715055" [longitude]="-47.790359172861116"
-                                [label]="'Traficante'">
-                                <agm-info-window [isOpen]="true">
-                                    <p style=" color: black;"> Tráfico de Drogas</p>
-                                    <p style=" color: black;"> Endereço: ........ </p>
-                                    <p style=" color: black;"> <strong>Pessoas: </strong> <a
-                                            [routerLink]="['/pessoa/editar/1']">Fulano 01</a>, <a href="#">Fulano 02</a>
-                                    </p>
-                                    <p style=" color: black;"> 20/09/2022 - 17:50 </p>
-                                    <p style=" color: blue;"><a href="#">Detalhes</a></p>
-                                </agm-info-window>
-                            </agm-marker>
 
                             !-- MARCADOR DE PERGUNTAS -->
                             <ng-container *ngIf="latMenu !== 0;">
                                 <agm-marker [latitude]="latMenu" [longitude]="longMenu"
-                                    [iconUrl]="'http://maps.google.com/mapfiles/kml/pal3/icon59.png'" [color]="blue">
+                                    [iconUrl]="'http://maps.google.com/mapfiles/kml/pal3/icon43.png'" [color]="blue">
                                     <agm-info-window [isOpen]="true">
                                         <p style=" color: black;"><a
                                                 [routerLink]="['/informacao/cadastrar', latMenu , longMenu]">Inserir
                                                 Informação
                                                 Nesse Local</a></p>
                                         <p style=" color: black;"><a
-                                                [routerLink]="['/veiculo/cadastrar' , latMenu , longMenu]">Inserir
-                                                Veículo
-                                                Suspeito Nesse Local</a></p>
+                                                [routerLink]="['/informacao/cadastrar' , latMenu , longMenu, 'carro']">Inserir informação de veículo</a></p>
                                         <p style=" color: black;"><a
-                                                [routerLink]="['/pessoa/cadastrar' , latMenu , longMenu]">Inserir Pessoa
-                                                Abordada
-                                                Nesse Local</a></p>
-
-                                    </agm-info-window>
-                                </agm-marker>
-                            </ng-container>
-
-
-
-
-                            <!-- Marcador de Veículos -->
-                            <ng-container *ngIf="marcadoresVeiculos !== null && marcadoresVeiculos.length > 0">
-                                <agm-marker *ngFor="let marcadorVeiculo of marcadoresVeiculos"
-                                    [latitude]="marcadorVeiculo.marcador.latitude"
-                                    [longitude]="marcadorVeiculo.marcador.longitude"
-                                    [iconUrl]="'http://maps.google.com/mapfiles/kml/pal4/icon7.png'"
-                                    [title]="'Veículo em situação suspeita'">
-                                    <agm-info-window [isOpen]="marcadorVeiculo.marcador.isOpen">
-                                        <p style=" color: black;">{{marcadorVeiculo.descricao}}</p>
-                                        <p style=" color: black;"><strong>Placa: </strong>{{marcadorVeiculo.placa}}</p>
-                                        <p style=" color: black;">{{marcadorVeiculo.observacao}}</p>
-                                        <p style=" color: black;">{{marcadorVeiculo.marcador.dataAtualizacao |
-                                            date:'medium' : "" : 'pt-BR'}}</p>
-
+                                                [routerLink]="['/informacao/cadastrar' , latMenu , longMenu , 'pessoa']">Inserir informação de pessoa
+                                                </a></p>
 
                                     </agm-info-window>
                                 </agm-marker>
                             </ng-container>
 
                             <!-- Marcador de Informações -->
-                           
-                                <agm-marker *ngFor="let informe of marcadoresInforme"
-                                    [latitude]="informe.marcador.latitude"
-                                    [longitude]="informe.marcador.longitude"
-                                    [iconUrl]="'http://maps.google.com/mapfiles/kml/pal4/icon7.png'"
+                            <ng-container *ngFor="let informe of marcadoresInforme" >
+                                <agm-marker *ngIf="informe.marcadores[0].tipo === 'carro'"
+                                    [latitude]="informe.marcadores[0].latitude"
+                                    [longitude]="informe.marcadores[0].longitude"
+                                    [iconUrl]="'http://maps.google.com/mapfiles/kml/pal4/icon15.png'"
                                     [title]="'Informação'">
-                                    <agm-info-window [isOpen]="informe.marcador.isOpen">
+                                    <agm-info-window [isOpen]="true">
                                         <p style=" color: black;">{{informe.titulo}}</p>
-                                        <p style=" color: black;">{{informe.informacao}}</p>
-                                        <p style=" color: black;">{{informe.dataAtualizacao | date:'medium' : "" : 'pt-BR'}}</p>
-                                        <p style=" color: blue;"><a target="_blank" href="https://www.google.com/maps/search/?api=1&query={{informe.marcador.latitude}}%2C{{informe.marcador.longitude}}">Abrir no mapa</a></p>
+                                        <p style=" color: black;">{{informe.detalhe}}</p>
+                                        <p style=" color: black;">{{informe.marcadores[0].endereco?.descricao}}</p>
+                                        <p style=" color: black;">Última atualização: {{informe.dataAlteracao | date:'medium' : "" : 'pt-BR'}}</p>
+                                        <p style=" color: blue;"><a target="_blank" href="https://www.google.com/maps/search/?api=1&query={{informe.marcadores[0].latitude}}%2C{{informe.marcadores[0].longitude}}">Abrir no mapa</a></p>
                                     </agm-info-window>
                                 </agm-marker>
+                                <agm-marker *ngIf="informe.marcadores[0].tipo === 'pessoa'"
+                                    [latitude]="informe.marcadores[0].latitude"
+                                    [longitude]="informe.marcadores[0].longitude"
+                                    [iconUrl]="'http://maps.google.com/mapfiles/kml/pal2/icon14.png'"
+                                    [title]="'Informação'">
+                                    <agm-info-window [isOpen]="true">
+                                        <p style=" color: black;">{{informe.titulo}}</p>
+                                        <p style=" color: black;">{{informe.detalhe}}</p>
+                                        <p style=" color: black;">{{informe.marcadores[0].endereco?.descricao}}</p>
+                                        <p style=" color: black;">Última atualização: {{informe.dataAlteracao | date:'medium' : "" : 'pt-BR'}}</p>
+                                        <p style=" color: blue;"><a target="_blank" href="https://www.google.com/maps/search/?api=1&query={{informe.marcadores[0].latitude}}%2C{{informe.marcadores[0].longitude}}">Abrir no mapa</a></p>
+                                    </agm-info-window>
+                                </agm-marker>
+                                <agm-marker *ngIf="informe.marcadores[0].tipo === 'informacao'"
+                                [latitude]="informe.marcadores[0].latitude"
+                                [longitude]="informe.marcadores[0].longitude"
+                                [iconUrl]="'http://maps.google.com/mapfiles/kml/pal4/icon49.png'"
+                                [title]="'Informação'">
+                                <agm-info-window [isOpen]="true">
+                                    <p style=" color: black;">{{informe.titulo}}</p>
+                                    <p style=" color: black;">{{informe.detalhe}}</p>
+                                    <p style=" color: black;">{{informe.marcadores[0].endereco?.descricao}}</p>
+                                    <p style=" color: black;">Última atualização:  {{informe.dataAlteracao | date:'medium' : "" : 'pt-BR'}}</p>
+                                    <p style=" color: blue;"><a target="_blank" href="https://www.google.com/maps/search/?api=1&query={{informe.marcadores[0].latitude}}%2C{{informe.marcadores[0].longitude}}">Abrir no mapa</a></p>
+                                </agm-info-window>
+                            </agm-marker>
+
+                            </ng-container>
 
 
 
