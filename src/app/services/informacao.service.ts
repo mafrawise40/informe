@@ -14,11 +14,20 @@ export class InformacaoService {
   constructor(protected http: HttpClient) { }
 
   getAll(): Observable<Informacao[]> {
-    return this.http.get<Informacao[]>(this.urlResource + '/retornar-todos').pipe(catchError(this.handleError.bind(this)));
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type':'application/json'
+    });
+    
+    return this.http.post<Informacao[]>(this.urlResource + '/retornar-todos', {headers}).pipe(catchError(this.handleError.bind(this)));
   }
 
   getById(id: number): Observable<Informacao> {
-    return this.http.get<Informacao[]>(this.urlResource + '/retornar-por-id/'+id).pipe(catchError(this.handleError.bind(this)));
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type':'application/json'
+    });
+    return this.http.post<Informacao[]>(this.urlResource + '/retornar-por-id',id ,  {headers}).pipe(catchError(this.handleError.bind(this)));
   }
 
   save(dto: Informacao, edicao: boolean): Observable<any> {
@@ -54,13 +63,13 @@ export class InformacaoService {
   }
 
   uploadImagens(
-    formData: FormData
+    formData: FormData , idInformacao: number
   ): Observable<Informacao[]> {
     let headers = new HttpHeaders();
     headers.append("Content-Type", "multipart/form-data");
     headers.append("Accept", "application/json");
     return this.http
-      .post(this.urlResource + "/importar-feriado", formData)
+      .post(this.urlResource + "/upload-file/"+idInformacao, formData)
       .pipe(catchError(this.handleError.bind(this)));
   }
 

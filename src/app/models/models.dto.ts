@@ -1,3 +1,4 @@
+import { SafeUrl } from '@angular/platform-browser';
 import { Time } from "@angular/common";
 import { Timestamp } from "rxjs";
 
@@ -64,7 +65,8 @@ export class Arquivo extends BaseDTO {
 
   id: number;
   descricao: string;
-  arquivo: string;
+  arquivo: Blob;
+  url: SafeUrl;
 
 }
 
@@ -76,7 +78,7 @@ export class Informacao extends BaseDTO {
   detalhe: string;
   pessoas: Pessoa[];
   veiculos: Veiculo[];
-  marcadores: MarcadorMaps;
+  marcadores: MarcadorMaps[];
   arquivos: Arquivo[];
   situacao: string;
   relevancia: number;
@@ -84,6 +86,10 @@ export class Informacao extends BaseDTO {
   pessoasMat: string;
   veiculosMat: string;
   enderecoMat: string;
+
+  //chip
+  pessoasRemovidas: number[];
+  veiculosRemovido: number[];
 }
 
 export class FiltroPainelDTO extends BaseDTO {

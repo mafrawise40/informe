@@ -66,6 +66,8 @@ export class PainelComponent implements OnInit {
         dataInclusao: null
       }
 
+      console.log(this.filtro);
+
     }
 
     this.informacaoService.getByParametros(this.filtro).subscribe({
@@ -109,6 +111,10 @@ export class PainelComponent implements OnInit {
         NotificationUtil.showNotification('top', 'center', qtd+' registro(s) encontrados ', 1);
        }
     })
+  }
+
+  limpar(){
+    this.formulario.reset();
   }
 
 }

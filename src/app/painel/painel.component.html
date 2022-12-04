@@ -37,12 +37,13 @@
                             </div>
 
                             <button mat-raised-button class="btn btn-danger " (click)="pesquisar();">Pesquisar</button>
+                            <button mat-raised-button class="btn btn-danger " (click)="limpar();">Limpar</button>
                             <div class="clearfix"></div>
                         </form>
 
 
 
-                        <agm-map [latitude]="lat" [longitude]="lng" [zoom]="15" [mapTypeId]=""
+                        <agm-map [latitude]="lat" [longitude]="lng" [zoom]="15" [mapTypeId]="" [disableDefaultUI]="false"
                             (mapClick)="marcadorClick($event)">
 
 
@@ -67,43 +68,49 @@
 
                             <!-- Marcador de Informações -->
                             <ng-container *ngFor="let informe of marcadoresInforme" >
-                                <agm-marker *ngIf="informe.marcadores[0].tipo === 'carro'"
-                                    [latitude]="informe.marcadores[0].latitude"
-                                    [longitude]="informe.marcadores[0].longitude"
+                                <agm-marker *ngIf="informe.marcadores[informe.marcadores.length-1].tipo === 'carro'"
+                                    [latitude]="informe.marcadores[informe.marcadores.length-1].latitude"
+                                    [longitude]="informe.marcadores[informe.marcadores.length-1].longitude"
                                     [iconUrl]="'http://maps.google.com/mapfiles/kml/pal4/icon15.png'"
                                     [title]="'Informação'">
                                     <agm-info-window [isOpen]="true">
                                         <p style=" color: black;">{{informe.titulo}}</p>
                                         <p style=" color: black;">{{informe.detalhe}}</p>
-                                        <p style=" color: black;">{{informe.marcadores[0].endereco?.descricao}}</p>
+                                        <p style=" color: black;">{{informe.marcadores[informe.marcadores.length-1].endereco?.descricao}}</p>
                                         <p style=" color: black;">Última atualização: {{informe.dataAlteracao | date:'medium' : "" : 'pt-BR'}}</p>
-                                        <p style=" color: blue;"><a target="_blank" href="https://www.google.com/maps/search/?api=1&query={{informe.marcadores[0].latitude}}%2C{{informe.marcadores[0].longitude}}">Abrir no mapa</a></p>
+                                        <p style=" color: blue;"><a target="_blank" href="https://www.google.com/maps/search/?api=1&query={{informe.marcadores[informe.marcadores.length-1].latitude}}%2C{{informe.marcadores[informe.marcadores.length-1].longitude}}">Abrir no mapa</a></p>
+                                        <p style=" color: blue;"></p>
+                                        <p [routerLink]="'/informacao/editar/'+informe.id" style=" color: blue;">Editar</p>
                                     </agm-info-window>
                                 </agm-marker>
-                                <agm-marker *ngIf="informe.marcadores[0].tipo === 'pessoa'"
-                                    [latitude]="informe.marcadores[0].latitude"
-                                    [longitude]="informe.marcadores[0].longitude"
+                                <agm-marker *ngIf="informe.marcadores[informe.marcadores.length-1].tipo === 'pessoa'"
+                                    [latitude]="informe.marcadores[informe.marcadores.length-1].latitude"
+                                    [longitude]="informe.marcadores[informe.marcadores.length-1].longitude"
                                     [iconUrl]="'http://maps.google.com/mapfiles/kml/pal2/icon14.png'"
                                     [title]="'Informação'">
                                     <agm-info-window [isOpen]="true">
                                         <p style=" color: black;">{{informe.titulo}}</p>
                                         <p style=" color: black;">{{informe.detalhe}}</p>
-                                        <p style=" color: black;">{{informe.marcadores[0].endereco?.descricao}}</p>
+                                        <p style=" color: black;">{{informe.marcadores[informe.marcadores.length-1].endereco?.descricao}}</p>
                                         <p style=" color: black;">Última atualização: {{informe.dataAlteracao | date:'medium' : "" : 'pt-BR'}}</p>
-                                        <p style=" color: blue;"><a target="_blank" href="https://www.google.com/maps/search/?api=1&query={{informe.marcadores[0].latitude}}%2C{{informe.marcadores[0].longitude}}">Abrir no mapa</a></p>
+                                        <p style=" color: blue;"><a target="_blank" href="https://www.google.com/maps/search/?api=1&query={{informe.marcadores[informe.marcadores.length-1].latitude}}%2C{{informe.marcadores[informe.marcadores.length-1].longitude}}">Abrir no mapa</a></p>
+                                        <p style=" color: blue;"></p>
+                                        <p [routerLink]="'/informacao/editar/'+informe.id" style=" color: blue;">Editar</p>
                                     </agm-info-window>
                                 </agm-marker>
-                                <agm-marker *ngIf="informe.marcadores[0].tipo === 'informacao'"
-                                [latitude]="informe.marcadores[0].latitude"
-                                [longitude]="informe.marcadores[0].longitude"
+                                <agm-marker *ngIf="informe.marcadores[informe.marcadores.length-1].tipo === 'informacao'"
+                                [latitude]="informe.marcadores[informe.marcadores.length-1].latitude"
+                                [longitude]="informe.marcadores[informe.marcadores.length-1].longitude"
                                 [iconUrl]="'http://maps.google.com/mapfiles/kml/pal4/icon49.png'"
                                 [title]="'Informação'">
                                 <agm-info-window [isOpen]="true">
                                     <p style=" color: black;">{{informe.titulo}}</p>
                                     <p style=" color: black;">{{informe.detalhe}}</p>
-                                    <p style=" color: black;">{{informe.marcadores[0].endereco?.descricao}}</p>
+                                    <p style=" color: black;">{{informe.marcadores[informe.marcadores.length-1].endereco?.descricao}}</p>
                                     <p style=" color: black;">Última atualização:  {{informe.dataAlteracao | date:'medium' : "" : 'pt-BR'}}</p>
-                                    <p style=" color: blue;"><a target="_blank" href="https://www.google.com/maps/search/?api=1&query={{informe.marcadores[0].latitude}}%2C{{informe.marcadores[0].longitude}}">Abrir no mapa</a></p>
+                                    <p style=" color: blue;"><a target="_blank" href="https://www.google.com/maps/search/?api=1&query={{informe.marcadores[informe.marcadores.length-1].latitude}}%2C{{informe.marcadores[informe.marcadores.length-1].longitude}}">Abrir no mapa</a></p>
+                                    <p style=" color: blue;"></p>
+                                        <p [routerLink]="'/informacao/editar/'+informe.id" style=" color: blue;">Editar</p>
                                 </agm-info-window>
                             </agm-marker>
 

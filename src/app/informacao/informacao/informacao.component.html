@@ -52,9 +52,8 @@
                                         <label>Informação detalhada</label>
                                         <mat-form-field class="Informação Completa">
                                             <textarea rows="5" matInput
-                                                placeholder="Escreva aqui toda a informação necessária"
-                                                name="detalhe" id="detalhe"
-                                                formControlName="detalhe"></textarea>
+                                                placeholder="Escreva aqui toda a informação necessária" name="detalhe"
+                                                id="detalhe" formControlName="detalhe"></textarea>
                                         </mat-form-field>
 
                                     </div>
@@ -124,18 +123,22 @@
 
                                     <div class="col-md-12">
                                         <label>Informe a localização no mapa</label>
-                                        <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom" [mapTypeId]=""
+                                        <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom"
                                             (mapClick)="marcadorClick($event)">
 
-                                            <agm-marker *ngFor="let m of markers; let i = index"
-                                                (markerClick)="clickedMarker(m.label, i)" [latitude]="m.lat"
-                                                [longitude]="m.lng" [label]="m.label" [markerDraggable]="m.draggable">
+                                            <ng-container *ngFor="let m of markers; let i = index">
+                                                <agm-marker *ngIf="m.lat != 0" (markerClick)="clickedMarker(m.label, i)"
+                                                    [latitude]="m.lat" [longitude]="m.lng" [label]="m.label"
+                                                    [markerDraggable]="m.draggable">
 
-                                                <agm-info-window>
-                                                    <strong>InfoWindow content</strong>
-                                                </agm-info-window>
+                                                    <agm-info-window>
+                                                        <strong>Marcação Atual.</strong>
+                                                    </agm-info-window>
 
-                                            </agm-marker>
+                                                </agm-marker>
+
+                                            </ng-container>
+
                                         </agm-map>
                                     </div>
                                 </div>
@@ -156,14 +159,19 @@
                                     <ng-container *ngFor="let url of urls; let i = index">
                                         <div class="col-md-12">
                                             <img [src]="url" class="rounded mb-3" width="180">
-                                            <button (click)="removerImagem(i)" title="Remover imagem" class="btn-danger pull-center">
+                                            <button (click)="removerImagem(i)" title="Remover imagem"
+                                                class="btn-danger pull-center">
                                                 <mat-icon>delete</mat-icon>
                                             </button>
-                                        </div>
+                                        </div>deletar
+                                        
                                     </ng-container>
 
                                 </div>
 
+                                <ng-container *ngFor="let aquivo of arquivosImagens; let i = index">
+                                    <img [attr.src]="aquivo.url" name="{{aquivo.id}}" width="400px" height="400px">
+                                </ng-container>
                             </div>
                         </div>
 
