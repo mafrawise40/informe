@@ -17,7 +17,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a mat-button class="nav-link" href="#fotos" data-toggle="tab">
+                                    <a mat-button class="nav-link" href="#fotos" (click)="carregarFotos()" data-toggle="tab">
                                         <i class="material-icons">photo_library</i> Fotos
                                         <div class="ripple-container"></div>
                                     </a>
@@ -141,6 +141,12 @@
 
                                         </agm-map>
                                     </div>
+                                    <div class="col-md-5"></div>
+                                    <div class="col-md-2">
+                                    <button (click)="marcarLocalizacao()" mat-raised-button type="submit"
+                                     class="btn btn-dark pull-center">Marcar Localização Atual</button>  
+                                    </div>  
+                                    <div class="col-md-5"></div>
                                 </div>
 
 
@@ -149,7 +155,7 @@
 
                             </div>
 
-                            <div class="tab-pane" id="fotos">
+                            <div class="tab-pane" id="fotos" >
 
                                 <div class="col-md-12">
                                     <input type="file" multiple (change)="detectFiles($event)" accept="image/*">
@@ -157,20 +163,26 @@
 
                                 <div class="col-md-12">
                                     <ng-container *ngFor="let url of urls; let i = index">
-                                        <div class="col-md-12">
-                                            <img [src]="url" class="rounded mb-3" width="180">
+                                        <div class="col-md-4">
+                                            <img [src]="url" class="rounded mb-3" width="100%" height="auto">
                                             <button (click)="removerImagem(i)" title="Remover imagem"
                                                 class="btn-danger pull-center">
                                                 <mat-icon>delete</mat-icon>
                                             </button>
-                                        </div>deletar
+                                        </div>
                                         
                                     </ng-container>
 
                                 </div>
 
                                 <ng-container *ngFor="let aquivo of arquivosImagens; let i = index">
-                                    <img [attr.src]="aquivo.url" name="{{aquivo.id}}" width="400px" height="400px">
+                                    <div class="col-md-4">
+                                    <img [attr.src]="aquivo.url" name="{{aquivo.id}}" width="100%" height="auto">
+                                    <button (click)="deletarImagem(aquivo , index)" title="Deletar imagem"
+                                                class="btn-danger pull-center">
+                                                <mat-icon>delete</mat-icon>
+                                            </button>
+                                    </div>
                                 </ng-container>
                             </div>
                         </div>

@@ -48,6 +48,12 @@ export class InformacaoService {
       .pipe(catchError(this.handleError.bind(this)));
   }
 
+  deleteImagem(id, idImagem): Observable<any> {
+    return this.http
+      .delete(this.urlResource + "/" + id + "/" +idImagem)
+      .pipe(catchError(this.handleError.bind(this)));
+  }
+
   getByParametros(dto :FiltroPainelDTO): Observable<Informacao[]> {
     return this.http.post<Informacao[]>(this.urlResource + '/retornar-por-parametros', dto).pipe(catchError(this.handleError.bind(this)));
   }
