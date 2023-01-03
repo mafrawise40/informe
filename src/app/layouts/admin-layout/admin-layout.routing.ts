@@ -1,3 +1,4 @@
+import { ConsultarPessoasComponent } from './../../pessoas/consultar-pessoas/consultar-pessoas.component';
 import { InformacaoComponent } from 'app/informacao/informacao/informacao.component';
 import { PainelComponent } from '../../painel/painel.component';
 import { Routes } from '@angular/router';
@@ -11,6 +12,7 @@ import { MapsComponent } from '../../maps/maps.component';
 import { NotificationsComponent } from '../../notifications/notifications.component';
 import { UpgradeComponent } from '../../upgrade/upgrade.component';
 import { InformacaoConsultarComponent } from 'app/informacao-consultar/informacao-consultar.component';
+import { CadastrarPessoasComponent } from 'app/pessoas/cadastrar-pessoas/cadastrar-pessoas.component';
 
 export const AdminLayoutRoutes: Routes = [
     // {
@@ -69,6 +71,9 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'informacao/cadastrar/:latitude/:longitude/:tipoInformacao',        component: InformacaoComponent },
     { path: 'informacao/editar/:id',        component: InformacaoComponent },
     { path: 'informacao/consultar',        component: InformacaoConsultarComponent },
+    { path: 'pessoa/consultar',        component: ConsultarPessoasComponent },
+    { path: 'pessoa/cadastrar',        component: CadastrarPessoasComponent },
+    { path: 'pessoa/editar/:id',        component: CadastrarPessoasComponent },
    
     
 ];

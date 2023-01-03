@@ -42,8 +42,8 @@
 
 
 
-                        <agm-map [latitude]="lat" [longitude]="lng" [zoom]="15" [mapTypeId]="" [disableDefaultUI]="false"
-                            (mapClick)="marcadorClick($event)">
+                        <agm-map [latitude]="lat" [longitude]="lng" [zoom]="15" [mapTypeId]=""
+                            [disableDefaultUI]="false" (mapClick)="marcadorClick($event)">
 
 
                             !-- MARCADOR DE PERGUNTAS -->
@@ -56,68 +56,85 @@
                                                 Informação
                                                 Nesse Local</a></p>
                                         <p style=" color: black;"><a
-                                                [routerLink]="['/informacao/cadastrar' , latMenu , longMenu, 'carro']">Inserir informação de veículo</a></p>
+                                                [routerLink]="['/informacao/cadastrar' , latMenu , longMenu, 'carro']">Inserir
+                                                informação de veículo</a></p>
                                         <p style=" color: black;"><a
-                                                [routerLink]="['/informacao/cadastrar' , latMenu , longMenu , 'pessoa']">Inserir informação de pessoa
-                                                </a></p>
+                                                [routerLink]="['/informacao/cadastrar' , latMenu , longMenu , 'pessoa']">Inserir
+                                                informação de pessoa
+                                            </a></p>
 
                                     </agm-info-window>
                                 </agm-marker>
                             </ng-container>
 
                             <!-- Marcador de Informações -->
-                            <ng-container *ngFor="let informe of marcadoresInforme" >
-                                <agm-marker *ngIf="informe.marcadores[informe.marcadores.length-1].tipo === 'carro'"
-                                    [latitude]="informe.marcadores[informe.marcadores.length-1].latitude"
-                                    [longitude]="informe.marcadores[informe.marcadores.length-1].longitude"
-                                    [iconUrl]="'http://maps.google.com/mapfiles/kml/pal4/icon15.png'"
-                                    [title]="'Informação'">
-                                    <agm-info-window [isOpen]="true">
-                                        <p style=" color: black;">{{informe.titulo}}</p>
-                                        <p style=" color: black;">{{informe.detalhe}}</p>
-                                        <p style=" color: black;">{{informe.marcadores[informe.marcadores.length-1].endereco?.descricao}}</p>
-                                        <p style=" color: black;">Última atualização: {{informe.dataAlteracao | date:'medium' : "" : 'pt-BR'}}</p>
-                                        <p style=" color: blue;"><a target="_blank" href="https://www.google.com/maps/search/?api=1&query={{informe.marcadores[informe.marcadores.length-1].latitude}}%2C{{informe.marcadores[informe.marcadores.length-1].longitude}}">Abrir no mapa</a></p>
-                                        <p style=" color: blue;"></p>
-                                        <p [routerLink]="'/informacao/editar/'+informe.id" style=" color: blue;">Editar</p>
-                                    </agm-info-window>
-                                </agm-marker>
-                                <agm-marker *ngIf="informe.marcadores[informe.marcadores.length-1].tipo === 'pessoa'"
-                                    [latitude]="informe.marcadores[informe.marcadores.length-1].latitude"
-                                    [longitude]="informe.marcadores[informe.marcadores.length-1].longitude"
-                                    [iconUrl]="'http://maps.google.com/mapfiles/kml/pal2/icon14.png'"
-                                    [title]="'Informação'">
-                                    <agm-info-window [isOpen]="true">
-                                        <p style=" color: black;">{{informe.titulo}}</p>
-                                        <p style=" color: black;">{{informe.detalhe}}</p>
-                                        <p style=" color: black;">{{informe.marcadores[informe.marcadores.length-1].endereco?.descricao}}</p>
-                                        <p style=" color: black;">Última atualização: {{informe.dataAlteracao | date:'medium' : "" : 'pt-BR'}}</p>
-                                        <p style=" color: blue;"><a target="_blank" href="https://www.google.com/maps/search/?api=1&query={{informe.marcadores[informe.marcadores.length-1].latitude}}%2C{{informe.marcadores[informe.marcadores.length-1].longitude}}">Abrir no mapa</a></p>
-                                        <p style=" color: blue;"></p>
-                                        <p [routerLink]="'/informacao/editar/'+informe.id" style=" color: blue;">Editar</p>
-                                    </agm-info-window>
-                                </agm-marker>
-                                <agm-marker *ngIf="informe.marcadores[informe.marcadores.length-1].tipo === 'informacao'"
-                                [latitude]="informe.marcadores[informe.marcadores.length-1].latitude"
-                                [longitude]="informe.marcadores[informe.marcadores.length-1].longitude"
-                                [iconUrl]="'http://maps.google.com/mapfiles/kml/pal4/icon49.png'"
-                                [title]="'Informação'">
-                                <agm-info-window [isOpen]="true">
-                                    <p style=" color: black;">{{informe.titulo}}</p>
-                                    <p style=" color: black;">{{informe.detalhe}}</p>
-                                    <p style=" color: black;">{{informe.marcadores[informe.marcadores.length-1].endereco?.descricao}}</p>
-                                    <p style=" color: black;">Última atualização:  {{informe.dataAlteracao | date:'medium' : "" : 'pt-BR'}}</p>
-                                    <p style=" color: blue;"><a target="_blank" href="https://www.google.com/maps/search/?api=1&query={{informe.marcadores[informe.marcadores.length-1].latitude}}%2C{{informe.marcadores[informe.marcadores.length-1].longitude}}">Abrir no mapa</a></p>
-                                    <p style=" color: blue;"></p>
-                                        <p [routerLink]="'/informacao/editar/'+informe.id" style=" color: blue;">Editar</p>
-                                </agm-info-window>
-                            </agm-marker>
+                            <ng-container *ngFor="let informe of marcadoresInforme">
+                                <ng-container *ngFor="let marcador of informe.marcadores">
+                                    <agm-marker *ngIf="marcador.tipo &&
+                                                       marcador.tipo === 'carro' && marcador.latitude !== 0 "
+                                        [latitude]="marcador.latitude" [longitude]="marcador.longitude"
+                                        [iconUrl]="'http://maps.google.com/mapfiles/kml/pal4/icon15.png'"
+                                        [title]="'Informação'">
+                                        <agm-info-window [isOpen]="true">
+                                            <p style=" color: black;">{{informe.titulo}}</p>
+                                            <!-- p style=" color: black;">{{informe.detalhe}}</p -->
+                                            <!-- <p style=" color: black;">{{marcador.endereco?.descricao}}</p> -->
+                                            <p style=" color: black;">Última atualização: {{informe.dataAlteracao |
+                                                date:'medium' : "" : 'pt-BR'}}</p>
+                                            <p style=" color: blue;"><a target="_blank"
+                                                    href="https://www.google.com/maps/search/?api=1&query={{marcador.latitude}}%2C{{marcador.longitude}}">Abrir
+                                                    no mapa</a></p>
+                                            <p style=" color: blue;"></p>
+                                            <p [routerLink]="'/informacao/editar/'+informe.id" style=" color: blue;">
+                                                Editar</p>
+                                        </agm-info-window>
+                                    </agm-marker>
 
+                                    <agm-marker *ngIf=" marcador.tipo &&
+                                                        marcador.tipo === 'pessoa' && marcador.latitude !== 0" [latitude]="marcador.latitude"
+                                        [longitude]="marcador.longitude"
+                                        [iconUrl]="'http://maps.google.com/mapfiles/kml/pal2/icon14.png'"
+                                        [title]="'Informação'">
+                                        <agm-info-window [isOpen]="true">
+                                            <p style=" color: black;">{{informe.titulo}}</p>
+                                            <!-- p style=" color: black;">{{informe.detalhe}}</p -->
+                                            <!-- <p style=" color: black;">{{marcador.endereco?.descricao}}</p> -->
+                                            <p style=" color: black;">{{informe.dataAlteracao |
+                                                date:'medium' : "" : 'pt-BR'}}</p> 
+                                            <p style=" color: blue;"><a target="_blank"
+                                                    href="https://www.google.com/maps/search/?api=1&query={{marcador.latitude}}%2C{{marcador.longitude}}">Abrir
+                                                    no mapa</a></p>
+                                            <p style=" color: blue;"></p>
+                                            <p [routerLink]="'/informacao/editar/'+informe.id" style=" color: blue;">
+                                                Editar</p>
+                                        </agm-info-window>
+                                    </agm-marker>
+                                    <agm-marker *ngIf=" marcador.tipo &&
+                                                        marcador.tipo === 'informacao' && marcador.latitude !== 0"
+
+                                        [latitude]="marcador.latitude" [longitude]="marcador.longitude"
+                                        [iconUrl]="'http://maps.google.com/mapfiles/kml/pal4/icon49.png'"
+                                        [title]="'Informação'">
+                                        <agm-info-window [isOpen]="true">
+                                            <p style=" color: black;">{{informe.titulo}}</p>
+                                            <!-- p style=" color: black;">{{informe.detalhe}}</p -->
+                                            <!-- <p style=" color: black;">{{marcador.endereco?.descricao}}</p> -->
+                                            <p style=" color: black;">{{informe.dataAlteracao |
+                                                date:'medium' : "" : 'pt-BR'}}</p>
+                                            <p style=" color: blue;"><a target="_blank"
+                                                    href="https://www.google.com/maps/search/?api=1&query={{marcador.latitude}}%2C{{marcador.longitude}}">Abrir
+                                                    no mapa</a></p>
+                                            <p style=" color: blue;"></p>
+                                            <p [routerLink]="'/informacao/editar/'+informe.id" style=" color: blue;">
+                                                Editar</p>
+                                        </agm-info-window>
+                                    </agm-marker>
+                                </ng-container>
                             </ng-container>
 
 
 
-                            
+
 
 
                         </agm-map>

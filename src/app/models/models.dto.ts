@@ -7,8 +7,8 @@ export class BaseDTO extends Serializable {
 
  
 
-  dataInclusao: Date;
-  dataAlteracao: Date
+  dataInclusao?: Date;
+  dataAlteracao?: Date
 
 }
 
@@ -48,6 +48,9 @@ export class Pessoa extends BaseDTO {
   regiao: string;
   observacao: string;
   endereco: Endereco[];
+  apelido: string;
+  linkGenesis: string;
+  detalhe: string;
 
 }
 
@@ -57,6 +60,7 @@ export class Endereco extends BaseDTO {
   descricao: string;
   regiao: string;
   uf: string;
+  observacao: string;
   marcador: MarcadorMaps;
 
 }
@@ -65,6 +69,7 @@ export class Arquivo extends BaseDTO {
 
   id: number;
   descricao: string;
+  titulo: string;
   arquivo: Blob;
   url: SafeUrl;
 
@@ -88,8 +93,8 @@ export class Informacao extends BaseDTO {
   enderecoMat: string;
 
   //chip
-  pessoasRemovidas: number[];
-  veiculosRemovido: number[];
+  pessoasRemovidas: number[] = [];
+  veiculosRemovido: number[] = [];
 }
 
 export class FiltroPainelDTO extends BaseDTO {
@@ -97,4 +102,18 @@ export class FiltroPainelDTO extends BaseDTO {
   campoPesquisa: string;
   dataInicial: any;
   dataFinal: any;
+}
+
+export class TipoFileDTO extends BaseDTO {
+
+  inteiro: any;
+  comprimido: any;
+  url: any;
+}
+
+export class TipoUrlFileDTO extends BaseDTO {
+
+  url: any;
+  fileName: any;
+  fileTitulo: string;
 }

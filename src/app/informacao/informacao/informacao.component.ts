@@ -1,23 +1,33 @@
+import { MarcadorService } from './../../services/marcador.service';
 import { MobileCheckUtils } from './../../util/MobileCheckUtil';
 import { element } from 'protractor';
 import { NotificationUtil } from './../../util/NotificationUtil';
 import { InformacaoService } from './../../services/informacao.service';
-import { Informacao, Pessoa, Veiculo, Endereco, Arquivo } from './../../models/models.dto';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Informacao, Pessoa, Veiculo, Endereco, Arquivo, TipoFileDTO, TipoUrlFileDTO } from './../../models/models.dto';
+import { AfterViewInit, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { COMMA, ENTER, I, X } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MarcadorMaps } from 'app/models/models.dto';
 import { AgmMap } from '@agm/core';
 import { google } from "google-maps";
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { delay } from 'rxjs';
+import { delay, Observable } from 'rxjs';
+import { NgxImageCompressService } from "ngx-image-compress";
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogoComponent } from 'app/dialogo/dialogo.component';
+import { DialogoEditarTituloImagemComponent } from 'app/dialogo/dialogo-editar-titulo-imagem/dialogo-editar-titulo-imagem.component';
+import { ArquivoService } from 'app/services/arquivo.service';
+import { DOCUMENT } from '@angular/common';
 
 
 declare var google: google;
 
-export interface Pessoas {
+/*export interface Pessoas {
   id: number;
   name: string;
 }
@@ -25,7 +35,7 @@ export interface Pessoas {
 export interface Veiculos {
   id: number;
   name: string;
-}
+}*/
 
 export interface Marker {
   lat: number;
@@ -49,11 +59,16 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
   @ViewChild(AgmMap) //só carregar depois do afterInit
   agmMap: AgmMap;
 
+  @ViewChild(MatPaginator) paginatorPessoas: MatPaginator;
+  @ViewChild(MatPaginator) paginatorVeiculos: MatPaginator;
+  @ViewChild(MatPaginator) paginatorEnderecos: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
+
   markers: Marker[] = [];
 
   lat: number = -15.897029963258108; //inicial
   lng: number = -47.78420998141388;
-  zoom: number = 1;
+  zoom: number = 17;
   regiao: string = "";
   latMarcado = 0;
   lngMarcado = 0;
@@ -62,21 +77,60 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
   editarExisteMarcador = false;
 
   formulario: FormGroup;
+
   marcador: MarcadorMaps;
   arquivosImagens: Arquivo[] = []
+  arquivosImagensLazy: string[] = []
 
 
-  files: any[] = [];
-  urls = new Array<string>();
+  //files: TipoFileDTO[] = [];
+  //urls: TipoUrlFileDTO[] = [];
+
+  novasFotosFormControl: FormControl[] = [];
+
+
+
 
   informacaoDto: Informacao = new Informacao();
   formData: FormData = new FormData();
+
+  //pessoas
+  //nomePessoaControl = new FormControl();
+  //nomeDoPaiPessoaControl = new FormControl();
+  //nomeDaMaePessoaControl = new FormControl();
+  //cpfPessoaControl = new FormControl();
+  displayedColumns: string[] = ['Nome', 'CPF', 'Pai', 'Mãe', 'Ações'];
+  dataSource: MatTableDataSource<Pessoa> = new MatTableDataSource<Pessoa>();
+  pessoasLista: Pessoa[] = [];
+  pessoasRemovidas: number[] = []
+
+
+  //veiculos
+  displayedColumnsVeiculos: string[] = ['Placa', 'Descrição', 'Ações'];
+  dataSourceVeiculo: MatTableDataSource<Veiculo> = new MatTableDataSource<Veiculo>();
+  veiculosLista: Veiculo[] = [];
+  filteredOptionsVeiculos: Observable<string[]>;
+  veiculosRemovidos: number[] = []
+
+  //enderecos
+  displayedColumnsEnderecos: string[] = ['Informação', 'Endereço', 'Região', 'Latitude', 'Longitude', 'Ações'];
+  dataSourceEnderecos: MatTableDataSource<MarcadorMaps> = new MatTableDataSource<MarcadorMaps>();
+  enderecosLista: MarcadorMaps[] = [];
+  filteredOptions: Observable<string[]>;
+  filteredOptionsEnderecos: Observable<string[]>;
+
 
   constructor(private formBuilder: FormBuilder,
     private router: ActivatedRoute,
     private redirect: Router,
     private informacaoService: InformacaoService,
-    private sanitizer: DomSanitizer) { }
+    private arquivoService: ArquivoService,
+    private sanitizer: DomSanitizer,
+    private imageCompress: NgxImageCompressService,
+    private marcadorService: MarcadorService,
+    private dialog: MatDialog,
+    @Inject(DOCUMENT) document: Document
+  ) { }
 
   ngOnInit(): void {
     this.criarFormulario();
@@ -89,23 +143,31 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
   }
 
 
-
-
-
   criarFormulario() {
 
     this.formulario = this.formBuilder.group({
       titulo: null,
       detalhe: null,
       endereco: null,
-      regiao: null
+      regiao: null,
+      pessoas: this.formBuilder.group({
+        nome: [null, Validators.required],
+        pai: null,
+        mae: null,
+        cpf: null
+      }),
+      veiculos: this.formBuilder.group({
+        placa: [null, Validators.required],
+        descricao: [null, Validators.required]
+      }),
+      arquivos: this.formBuilder.array([]),
     });
 
     if (this.editar) {
-      console.log("Entrou no editar..")
       this.router.params.subscribe(params => {
         this.informacaoService.getById(params.id).subscribe({
           next: (v) => {
+
             this.informacaoDto = v;
             this.formulario.patchValue({
               id: v.id,
@@ -114,39 +176,72 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
             });
 
             if (v.pessoas) {
-              v.pessoas.forEach(pessoa => {
-                this.pessoas.push({ id: pessoa.id, name: pessoa.nome });
-              });
+              this.pessoasLista = v.pessoas;
+              this.dataSource = new MatTableDataSource<Pessoa>(this.pessoasLista);
+              this.dataSource.paginator = this.paginatorPessoas;
+              this.dataSource.paginator._intl.itemsPerPageLabel = 'Exibir';
             }
             if (v.veiculos) {
-              v.veiculos.forEach(veiculo => {
-                this.veiculos.push({ id: veiculo.id, name: veiculo.descricao });
-              });
+              this.veiculosLista = v.veiculos;
+              this.dataSourceVeiculo = new MatTableDataSource<Veiculo>(this.veiculosLista);
+              this.dataSourceVeiculo.paginator = this.paginatorVeiculos;
+              this.dataSourceVeiculo.paginator._intl.itemsPerPageLabel = 'Exibir';
             }
 
-            if (v.marcadores[0] && v.marcadores[0].endereco) {
+            if (v.marcadores) {
+              this.enderecosLista = v.marcadores;
+              this.dataSourceEnderecos = new MatTableDataSource<MarcadorMaps>(this.enderecosLista);
+              this.dataSourceEnderecos.paginator = this.paginatorEnderecos;
+              this.dataSourceEnderecos.paginator._intl.itemsPerPageLabel = 'Exibir';
               this.editarExisteMarcador = true;
               this.formulario.patchValue({
-                endereco: v.marcadores[0].endereco.descricao,
-                regiao: v.marcadores[0].endereco.regiao
+                endereco: v.marcadores[v.marcadores.length - 1].endereco?.descricao,
+                regiao: v.marcadores[v.marcadores.length - 1].endereco?.regiao
               });
 
               //causando problemas no mapa..
-              this.atualizarMarker(this.informacaoDto.marcadores[0].latitude, this.informacaoDto.marcadores[0].longitude, 17, false);
-
+              this.atualizarMarker(this.informacaoDto.marcadores[v.marcadores.length - 1].latitude, this.informacaoDto.marcadores[v.marcadores.length - 1].longitude, 17, false);
             }
 
 
+
+
             if (this.informacaoDto.arquivos && this.informacaoDto.arquivos.length > 0) {
+
+
               this.informacaoDto.arquivos.forEach(element => {
                 var imagem = element;
 
                 let objectURL = 'data:image/jpeg;base64,' + imagem.arquivo;
                 let arquivoImg = new Arquivo();
+
+                if (this.imageCompress.byteCount(objectURL) > 245329) {
+                  this.imageCompress //faz o compressão da imagem.
+                    .compressFile(objectURL, 0, 50, 50) // 50% ratio, 50% quality
+                    .then(
+                      (compressedImage) => {
+                        arquivoImg.url = compressedImage;
+                        /*console.log("Foto convertida: " + imagem.descricao);
+                        console.log("Antes: " + this.imageCompress.byteCount(objectURL));
+                        console.log("Depois: " + this.imageCompress.byteCount(compressedImage));*/
+                        this.arquivosImagensLazy.push(compressedImage);
+                      }
+                    );
+                } else {
+                  arquivoImg.url = objectURL;
+                }
+
+
                 arquivoImg.id = imagem.id;
-                arquivoImg.url = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+                arquivoImg.descricao = imagem.descricao;
+                arquivoImg.titulo = imagem.titulo;
+                //arquivoImg.url = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+
                 this.arquivosImagens.push(arquivoImg);
+
+
               });
+
             }
 
 
@@ -155,7 +250,11 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
           error: (e) => {
             NotificationUtil.showNotification('top', 'right', 'Erro ao tentar consultar a informação. ', 4)
           },
-          complete: () => { console.log("completou o by id?") }
+          complete: () => { /* console.log("completou o by id?") 
+          console.log("Duração... ");
+          let elapsed = new Date().getTime() - start;
+          console.log(elapsed); */
+          }
         });
       });
     } else {
@@ -176,23 +275,22 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
     let marcadorMapa: MarcadorMaps = new MarcadorMaps();
     let marcaroSelecionadoEditar: MarcadorMaps;
 
-    this.pessoas.forEach(element => {
-      let pessoaDTO: Pessoa = new Pessoa();
+    this.pessoasLista.forEach(element => {
+      let pessoaDTO: Pessoa = element
       if (element.id) {
         pessoaDTO.id = element.id;
       }
-      pessoaDTO.nome = element.name;
+
       pessoaDTO.dataAlteracao = new Date();
       pessoaDTO.dataInclusao = new Date();
       pessoasList.push(pessoaDTO);
     });
 
-    this.veiculos.forEach(element => {
-      let veiculoDTO: Veiculo = new Veiculo();
+    this.veiculosLista.forEach(element => {
+      let veiculoDTO: Veiculo = element;
       if (element.id) {
         veiculoDTO.id = element.id;
       }
-      veiculoDTO.descricao = element.name;
       veiculoDTO.dataAlteracao = new Date();
       veiculoDTO.dataInclusao = new Date();
       VeiculoList.push(veiculoDTO);
@@ -204,82 +302,68 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
     this.informacaoDto.dataInclusao = new Date();
 
     //aqui faz manter o mesmo marcador...
-    if (this.editar) {
+    /*if (this.editar) {
       marcaroSelecionadoEditar = this.informacaoDto.marcadores[this.informacaoDto.marcadores.length - 1]
-    }
+    }*/
+
+    /*
+        this.router.params.subscribe(params => {
+          if (this.redirect.url.includes("latitude")) {
+            marcadorMapa.latitude = params['latitude'];
+            marcadorMapa.longitude = params['longitude'];
+    
+          }
+    
+    
+          if ((params['tipoInformacao'] !== undefined) || (this.editar)) {
+    
+            if (params['tipoInformacao'] === "carro" || (marcaroSelecionadoEditar.tipo == "carro")) {
+              marcadorMapa.tipo = 'carro'
+              marcadorMapa.tipoIcone = "'http://maps.google.com/mapfiles/kml/pal4/icon15.png'";
+            } else if (params['tipoInformacao'] === "pessoa" || (marcaroSelecionadoEditar.tipo == "pessoa")) {
+              marcadorMapa.tipo = 'pessoa'
+              marcadorMapa.tipoIcone = "'http://maps.google.com/mapfiles/kml/pal2/icon14.png'";
+            } else {
+    
+              marcadorMapa.tipo = 'informacao'
+              marcadorMapa.tipoIcone = "'http://maps.google.com/mapfiles/kml/pal4/icon49.png'";
+            }
+          } else if (params['tipoInformacao'] === undefined) {
+            marcadorMapa.open = 'true';
+            marcadorMapa.tipo = 'informacao';
+            marcadorMapa.tipoIcone = "'http://maps.google.com/mapfiles/kml/pal4/icon49.png'";
+          }
+    
+        });*/
 
 
-    this.router.params.subscribe(params => {
-      if (this.redirect.url.includes("latitude")) {
-        marcadorMapa.latitude = params['latitude'];
-        marcadorMapa.longitude = params['longitude'];
-
-      }
-
-
-      if ((params['tipoInformacao'] !== undefined) || (this.editar)) {
-
-        if (params['tipoInformacao'] === "carro" || (marcaroSelecionadoEditar.tipo == "carro")) {
-          marcadorMapa.tipo = 'carro'
-          marcadorMapa.tipoIcone = "'http://maps.google.com/mapfiles/kml/pal4/icon15.png'";
-        } else if (params['tipoInformacao'] === "pessoa" || (marcaroSelecionadoEditar.tipo == "pessoa")) {
-          marcadorMapa.tipo = 'pessoa'
-          marcadorMapa.tipoIcone = "'http://maps.google.com/mapfiles/kml/pal2/icon14.png'";
-        } else {
-
-          marcadorMapa.tipo = 'informacao'
-          marcadorMapa.tipoIcone = "'http://maps.google.com/mapfiles/kml/pal4/icon49.png'";
-        }
-      } else if (params['tipoInformacao'] === undefined) {
-        marcadorMapa.open = 'true';
-        marcadorMapa.tipo = 'informacao';
-        marcadorMapa.tipoIcone = "'http://maps.google.com/mapfiles/kml/pal4/icon49.png'";
-      }
-    });
-
-
-
-    if (this.markers.length > 0) {
-      marcadorMapa.latitude = this.markers[this.markers.length - 1].lat;
-      marcadorMapa.longitude = this.markers[this.markers.length - 1].lng;
-      if (this.editar) {
-        marcadorMapa.tipo = marcaroSelecionadoEditar.tipo;
-        marcadorMapa.tipoIcone = marcaroSelecionadoEditar.tipoIcone;
-        marcadorMapa.id = marcaroSelecionadoEditar.id; //mantém o mesmo marcador
-        if (marcaroSelecionadoEditar.endereco !== null && marcaroSelecionadoEditar.endereco !== undefined) {
-          endereco.id = marcaroSelecionadoEditar.endereco.id; //mantém o mesmo endereço.
-        }
-      }
-    }
-
-    endereco.descricao = this.formulario.get("endereco").value;
-    endereco.regiao = this.formulario.get("regiao").value;
-    marcadorMapa.endereco = endereco;
-
-    this.informacaoDto.marcadores = [];
-    this.informacaoDto.marcadores.push(marcadorMapa);
-
-
+    this.informacaoDto.marcadores = this.enderecosLista;
 
     this.informacaoDto.titulo = this.formulario.get("titulo").value;
     this.informacaoDto.detalhe = this.formulario.get("detalhe").value;
 
 
     //salvar arquivos...
-    if (this.files) {
-      for (let index = 0; index < this.files.length; index++) {
-        const element = this.files[index];
-        this.formData.append('image[' + index + ']', element);
-      }
-    }
+    if (this.arquivos.length > 0) {
 
-    if (this.editar) {
-      this.informacaoDto.pessoasRemovidas = this.chipRemovidosPessoas;
-      this.informacaoDto.veiculosRemovido = this.chipRemovidosVeiculos;
+
+      for (let index = 0; index < this.arquivos.length; index++) {
+        const element = this.arquivos.value[index].tipoFileDto;
+
+        this.formData.append('image[' + index + ']', element.inteiro);
+
+        if (this.arquivos.value[index].arquivoTitulo) {
+          this.formData.append('image[' + index + ']', this.arquivos.value[index].arquivoTitulo);
+        }
+        this.formData.append('image[' + index + ']', element.inteiro);
+        if (element.comprimido) {
+          this.formData.append('image[' + index + ']', element.comprimido);
+        }
+      }
+
     }
 
     //salvar a informacao
-
     this.processarSalvamento();
 
   }
@@ -288,7 +372,7 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
     this.informacaoService.save(this.informacaoDto, this.editar).subscribe({
       next: (v) => {
 
-        if (this.files) {
+        if (this.arquivos.length > 0) {
 
           this.processarUpload(v);
         }
@@ -339,6 +423,81 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
     this.getLocation();
   }
 
+  exibirMarcacaoNoMpapa(element: MarcadorMaps) {
+    this.atualizarMarker(element.latitude, element.longitude, 12, true);
+  }
+
+  salvarMarcacao() {
+    let textoMarcacao = "";
+    const dialogRef = this.dialog.open(DialogoComponent, {
+      width: '40%',
+      data: {
+        esconder: true,
+        titulo: 'Deseja realmente cancelar a operação?'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log();
+        let dtoEndereco: Endereco = new Endereco();
+        let dtoMarcador: MarcadorMaps = new MarcadorMaps();
+
+        if (this.lat !== 0 && this.lat !== null && this.lat !== undefined) {
+
+          dtoMarcador.latitude = this.lat;
+          dtoMarcador.longitude = this.lng;
+          dtoMarcador.open = 'true';
+          dtoMarcador.tipo = 'informacao';
+          dtoMarcador.tipoIcone = "'http://maps.google.com/mapfiles/kml/pal4/icon49.png'";
+
+          dtoEndereco.descricao = this.formulario.get("endereco").value;
+          dtoEndereco.regiao = this.formulario.get("regiao").value;
+          dtoEndereco.observacao = result;
+          dtoMarcador.endereco = dtoEndereco;
+
+          this.enderecosLista.push(dtoMarcador);
+          this.dataSourceEnderecos = new MatTableDataSource<MarcadorMaps>(this.enderecosLista);
+          this.dataSourceEnderecos.paginator = this.paginatorEnderecos;
+          this.dataSourceEnderecos.paginator._intl.itemsPerPageLabel = 'Exibir';
+
+        }
+      }
+    });
+
+
+
+
+  }
+
+  removerEndereco(element: MarcadorMaps, idx: number) {
+    const confirmAction = confirm('Gostaria de deletar este endereço?');
+    let ok: boolean = false;
+
+    if (confirmAction) {
+
+      ok = true;
+
+      if (element.id) {
+        this.marcadorService.delete(element.id).subscribe((res) => {
+          NotificationUtil.showNotification('top', 'right', 'Endereço deletado com sucesso.', 2);
+        }),
+          (erro) => {
+            ok = false;
+            NotificationUtil.showNotification('top', 'right', 'Falha ao deletar o endereço', 4);
+          }
+      }
+      console.log(ok);
+
+      if (ok === true) {
+        this.enderecosLista.splice(idx, 1);
+        this.dataSourceEnderecos = new MatTableDataSource<MarcadorMaps>(this.enderecosLista);
+        this.dataSourceEnderecos.paginator = this.paginatorEnderecos;
+        this.dataSourceEnderecos.paginator._intl.itemsPerPageLabel = 'Exibir';
+      }
+    }
+  }
+
   clickedMarker() {
 
   }
@@ -346,6 +505,7 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
   deletarImagem(arquivo: Arquivo, i: number) {
     const confirmAction = confirm('Gostaria de deletar esta imagem?');
     if (confirmAction) {
+
       this.informacaoService.deleteImagem(this.informacaoDto.id, arquivo.id).subscribe({
         next: (v) => {
           NotificationUtil.showNotification('top', 'right', 'Imagem deletado com sucesso.', 2);
@@ -358,6 +518,41 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
       })
 
     }
+
+  }
+
+  editarImagem(arquivo: Arquivo, i: number) {
+
+
+    let textoMarcacao = "";
+    const dialogRef = this.dialog.open(DialogoEditarTituloImagemComponent, {
+      width: '40%',
+      data: {
+        inputText: arquivo.titulo
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        arquivo.titulo = result;
+        this.arquivoService.save(arquivo, true).subscribe({
+          next: (res) => {
+            NotificationUtil.showNotification('top', 'right', 'Informação alterada.', 2);
+            document.getElementById("arquivoTitulo"+i).innerText = result;
+        
+            this.arquivosImagens[i] = arquivo;
+            this.informacaoDto.arquivos[i].titulo =  result;
+          },
+          error: (error) => {
+            NotificationUtil.showNotification('top', 'right', 'Falha ao alterar o titulo da imagem ' + error, 4);
+          }
+
+        })
+
+
+
+      }
+    });
 
   }
 
@@ -402,7 +597,6 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
         //mostrar o mapa de acordo com a região
 
         //se for mobile...
-
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(position => {
             this.lat = position.coords.latitude;
@@ -410,6 +604,8 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
             this.atualizarMarker(position.coords.latitude, position.coords.longitude, 17, true);
             this.isMarcadorPadrao = true;
 
+          }, erro => {
+            console.log(erro);
           });
         }
       }
@@ -465,109 +661,136 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
   detectFiles(event) {
 
     let arrayFiles: any[] = event.target.files;
+
     for (let index = 0; index < arrayFiles.length; index++) {
       const element = arrayFiles[index];
 
-      const find = this.files.find(x => x.name === element.name);
+      let arrayArquivo: any = this.arquivos.value;
+
+      const find = arrayArquivo.find(x => x.tipoFileDto.inteiro.name === element.name);
+
+      let incluirArquivo: TipoFileDTO = {
+        inteiro: element,
+        comprimido: null,
+        url: null,
+      };
+
 
       if (!find) {
-        this.files.push(element);
+
+        this.addArquivo(incluirArquivo);
       }
     }
 
+    if (this.arquivos.length > 0) {
+      let arrayForm: any[] = [];
+      arrayForm = this.arquivos.value;
 
-    if (this.files) {
-      this.urls = new Array<string>();
+      for (let index = 0; index < this.arquivos.length; index++) {
 
-      for (let file of this.files) {
-        /*if (file.size > 5120000) {
+        let reader = new FileReader();
+        reader.onload = (e: any) => { //seleciona a imagem que está sendo carregada
 
-        }
-        else {*/
-          let reader = new FileReader();
-          reader.onload = (e: any) => {
-            this.urls.push(e.target.result);
+          this.arquivos.value[index].tipoFileDto.url = e.target.result;
+          if (this.arquivos.value[index].tipoFileDto.size > 245329) { //faz o arquivo for maior que 1MB
+            this.imageCompress //faz o compressão da imagem.
+              .compressFile(e.target.result, 0, 50, 50) // 50% ratio, 50% quality
+              .then(
+                (compressedImage) => {
+                  this.arquivos.value[index].tipoFileDto.comprimido = compressedImage;
+                }
+              );
           }
-          reader.readAsDataURL(file);
-
-        //}
-
+        }
+        reader.readAsDataURL(this.arquivos.value[index].tipoFileDto.inteiro);
       }
     }
 
   }
 
   removerImagem(i: number) {
-    if (this.urls) {
-      this.urls.splice(i, 1);
+    if (this.arquivos.length > 0) {
+      this.arquivos.removeAt(i);
     }
   }
 
   removerImagemDeletadaBanck(i: number) {
     if (this.arquivosImagens) {
       this.arquivosImagens.splice(i, 1);
+      this.informacaoDto.arquivos.splice(i, 1);
     }
   }
 
+  adicionarPessoa() {
 
+    if (this.formulario.get("pessoas").get("nome").valid) {
 
-  /** CHUIP TEXT AREA */
-
-  addOnBlur = true;
-  readonly separatorKeysCodes = [ENTER, COMMA] as const;
-  pessoas: Pessoas[] = [];
-  veiculos: Veiculos[] = [];
-
-  add(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-
-    // Add our fruit
-    if (value) {
-      this.pessoas.push({ id: 0, name: value });
-    }
-
-    // Clear the input value
-    event.chipInput!.clear();
-  }
-
-
-  chipRemovidosPessoas: number[] = [];
-  chipRemovidosVeiculos: number[] = [];
-  remove(pessoas: Pessoas): void {
-    const index = this.pessoas.indexOf(pessoas);
-    if (this.editar) {
-      this.chipRemovidosPessoas.push(this.pessoas[index].id);
-    }
-    if (index >= 0) {
-      this.pessoas.splice(index, 1);
+      let novaPessoa = this.formulario.get("pessoas").value as Pessoa;
+      this.pessoasLista.push(novaPessoa);
+      this.dataSource = new MatTableDataSource<Pessoa>(this.pessoasLista);
+      this.dataSource.paginator = this.paginatorPessoas;
+      this.dataSource.paginator._intl.itemsPerPageLabel = 'Exibir';
+      this.formulario.get("pessoas").reset();
+    } else {
+      NotificationUtil.showNotification('top', 'right', 'O nome da pessoa é obrigatório', 4);
     }
 
   }
 
+  removerPessoa(pessoa: Pessoa, idx: number) {
+    this.pessoasRemovidas.push(pessoa.id);
+    this.informacaoDto.pessoasRemovidas = this.pessoasRemovidas;
+
+    this.pessoasLista.splice(idx, 1);
+    this.dataSource = new MatTableDataSource<Pessoa>(this.pessoasLista);
+    this.dataSource.paginator = this.paginatorPessoas;
+    this.dataSource.paginator._intl.itemsPerPageLabel = 'Exibir';
 
 
-  addVeiculo(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
 
-    // Add our fruit
-    if (value) {
-      this.veiculos.push({ id: 0, name: value });
-    }
-
-    // Clear the input value
-    event.chipInput!.clear();
   }
 
-  removeVeiculo(veiculo: Veiculos): void {
-    const index = this.veiculos.indexOf(veiculo);
+  adicionarVeiculo() {
+    if (this.formulario.get("veiculos").get("placa").valid ||
+      this.formulario.get("veiculos").get("descricao").valid) {
 
-    if (this.editar) {
-      this.chipRemovidosVeiculos.push(this.veiculos[index].id);
-    }
-    if (index >= 0) {
-      this.veiculos.splice(index, 1);
+      let novoVeiculo = this.formulario.get("veiculos").value as Veiculo;
+      this.veiculosLista.push(novoVeiculo);
+      this.dataSourceVeiculo = new MatTableDataSource<Veiculo>(this.veiculosLista);
+      this.dataSourceVeiculo.paginator = this.paginatorVeiculos;
+      this.dataSourceVeiculo.paginator._intl.itemsPerPageLabel = 'Exibir';
+      this.formulario.get("veiculos").reset();
+    } else {
+      NotificationUtil.showNotification('top', 'right', 'Pelo menos um campo deve ser preenchido.', 4);
     }
 
+  }
+
+  removerVeiculo(veiculo: Veiculo, idx: number) {
+    this.veiculosRemovidos.push(veiculo.id);
+    this.informacaoDto.veiculosRemovido = this.veiculosRemovidos;
+
+    this.veiculosLista.splice(idx, 1);
+    this.dataSourceVeiculo = new MatTableDataSource<Veiculo>(this.veiculosLista);
+    this.dataSourceVeiculo.paginator = this.paginatorPessoas;
+    this.dataSourceVeiculo.paginator._intl.itemsPerPageLabel = 'Exibir';
+  }
+
+
+  //criar campo de imagens com titulos dinamicos
+  criarArquivoFormGroup(file: TipoFileDTO): FormGroup {
+    return this.formBuilder.group({
+      arquivoTitulo: [null],
+      tipoFileDto: [file],
+    })
+  }
+
+  addArquivo(file: TipoFileDTO) {
+    this.arquivos.push(this.criarArquivoFormGroup(file));
+  }
+
+  get arquivos(): FormArray {
+    return <FormArray>this.formulario.get('arquivos');
   }
 
 }

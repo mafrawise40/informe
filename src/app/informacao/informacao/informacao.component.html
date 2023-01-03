@@ -17,11 +17,38 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a mat-button class="nav-link" href="#fotos" (click)="carregarFotos()" data-toggle="tab">
+                                    <a mat-button class="nav-link" href="#local" data-toggle="tab">
+                                        <i class="material-icons">location_on</i> Localização
+                                        <div class="ripple-container"></div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a mat-button class="nav-link" href="#pessoas" data-toggle="tab">
+                                        <i class="material-icons">groups</i> Pessoas
+                                        <div class="ripple-container"></div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a mat-button class="nav-link" href="#veiculos" data-toggle="tab">
+                                        <i class="material-icons">airport_shuttle</i> Veículos
+                                        <div class="ripple-container"></div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a mat-button class="nav-link" href="#fotos" (click)="carregarFotos()"
+                                        data-toggle="tab">
                                         <i class="material-icons">photo_library</i> Fotos
                                         <div class="ripple-container"></div>
                                     </a>
                                 </li>
+
+                                <li class="nav-item">
+                                    <a mat-button class="nav-link" href="#documentos" data-toggle="tab">
+                                        <i class="material-icons">upload_file</i> Documentos
+                                        <div class="ripple-container"></div>
+                                    </a>
+                                </li>
+
 
                             </ul>
                         </div>
@@ -30,6 +57,7 @@
                 <form [formGroup]="formulario">
                     <div class="card-body">
                         <div class="tab-content">
+                            <!-- DADOS GERAIS -->
                             <div class="tab-pane active" id="dados">
 
                                 <div class="row">
@@ -51,7 +79,7 @@
                                     <div class="col-md-12">
                                         <label>Informação detalhada</label>
                                         <mat-form-field class="Informação Completa">
-                                            <textarea rows="5" matInput
+                                            <textarea rows="10" matInput
                                                 placeholder="Escreva aqui toda a informação necessária" name="detalhe"
                                                 id="detalhe" formControlName="detalhe"></textarea>
                                         </mat-form-field>
@@ -60,7 +88,7 @@
                                 </div>
 
 
-                                <div class="row">
+                                <!-- div class="row">
                                     <div class="col-md-12">
                                         <label>Pessoas Envolvidas</label>
                                         <mat-form-field class="example-chip-list" appearance="fill">
@@ -80,10 +108,10 @@
                                         </mat-form-field>
 
                                     </div>
-                                </div>
+                                </div -->
 
 
-                                <div class="row">
+                                <!-- div class="row">
                                     <div class="col-md-12">
                                         <label>Veículos Envolvidos</label>
                                         <mat-form-field class="example-chip-list" appearance="fill">
@@ -105,7 +133,14 @@
                                         </mat-form-field>
 
                                     </div>
-                                </div>
+                                </div -->
+
+
+                            </div> <!-- FIM DADOS GERAIS -->
+
+
+                            <!-- LOCALIZAÇÂO -->
+                            <div class="tab-pane" id="local">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <mat-form-field class="example-full-width">
@@ -142,49 +177,436 @@
                                         </agm-map>
                                     </div>
                                     <div class="col-md-5"></div>
-                                    <div class="col-md-2">
-                                    <button (click)="marcarLocalizacao()" mat-raised-button type="submit"
-                                     class="btn btn-dark pull-center">Marcar Localização Atual</button>  
-                                    </div>  
+                                    <div class="col-md-5">
+                                        <button (click)="marcarLocalizacao()" mat-raised-button type="submit"
+                                            class="btn btn-dark pull-center">Marcar Localização Atual</button>
+
+                                        <button (click)="salvarMarcacao()" mat-raised-button type="submit"
+                                            class="btn btn-dark pull-center">Salvar Marcação</button>
+                                    </div>
                                     <div class="col-md-5"></div>
+
+                                    <div class="table-responsive">
+                                        <table mat-table matSort [dataSource]="dataSourceEnderecos"
+                                            class="table table-hover">
+
+                                            <ng-container matColumnDef="Informação">
+                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Informação </th>
+                                                <td mat-cell *matCellDef="let element"> {{element.endereco?.observacao}}
+                                                </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="Endereço">
+                                                <th mat-header-cell *matHeaderCellDef mat-sort-header> Endereço </th>
+                                                <td mat-cell *matCellDef="let element"> {{element.endereco?.descricao}}
+                                                </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="Região">
+                                                <th mat-header-cell *matHeaderCellDef> Região </th>
+                                                <td mat-cell *matCellDef="let element"> {{element.endereco?.regiao}}
+                                                </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="Latitude">
+                                                <th mat-header-cell *matHeaderCellDef> Latitude </th>
+                                                <td mat-cell *matCellDef="let element"> {{element?.latitude}} </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="Longitude">
+                                                <th mat-header-cell *matHeaderCellDef> Longitude </th>
+                                                <td mat-cell *matCellDef="let element"> {{element?.longitude}} </td>
+                                            </ng-container>
+
+                                            <ng-container matColumnDef="Ações">
+                                                <th mat-header-cell *matHeaderCellDef> Ações </th>
+                                                <td mat-cell *matCellDef="let element , let idx = index">
+
+                                                    <a title="Abrir rota no google maps" target="_blank"
+                                                        href="https://www.google.com/maps/search/?api=1&query={{element?.latitude}}%2C{{element?.longitude}}">
+
+                                                        <mat-icon aria-label="Abrir rota no google maps">
+                                                            travel_explore
+                                                        </mat-icon>
+
+                                                    </a>
+
+                                                    <button (click)="exibirMarcacaoNoMpapa(element)" mat-icon-button
+                                                        title="Mostrar no mapa">
+                                                        <mat-icon aria-label="Mostrar no mapa">
+                                                            my_location
+                                                        </mat-icon>
+                                                    </button>
+
+
+                                                    <button (click)="removerEndereco(element , idx)" mat-icon-button
+                                                        title="remover">
+                                                        <mat-icon aria-label="Botão de remoção">
+                                                            delete_forever
+                                                        </mat-icon>
+                                                    </button>
+
+                                                </td>
+                                            </ng-container>
+
+                                            <tr mat-header-row *matHeaderRowDef="displayedColumnsEnderecos"></tr>
+                                            <tr mat-row *matRowDef="let row; columns: displayedColumnsEnderecos;"></tr>
+                                        </table>
+
+
+
+                                        <div fxFlexAlign="end" fxFlex="100">
+                                            <mat-paginator #paginator [pageSize]="50"
+                                                [pageSizeOptions]="[5, 10, 20 , 50, 100]" fxFlexAlign="end">
+                                            </mat-paginator>
+                                        </div>
+                                    </div>
                                 </div>
-
-
-
-
 
                             </div>
 
-                            <div class="tab-pane" id="fotos" >
+                            <!-- FIM LOCALIZAÇÂO -->
 
-                                <div class="col-md-12">
-                                    <input type="file" multiple (change)="detectFiles($event)" accept="image/*">
-                                </div>
+                            <!-- PESSOAS -->
 
-                                <div class="col-md-12">
-                                    <ng-container *ngFor="let url of urls; let i = index">
-                                        <div class="col-md-4">
-                                            <img [src]="url" class="rounded mb-3" width="100%" height="auto">
-                                            <button (click)="removerImagem(i)" title="Remover imagem"
-                                                class="btn-danger pull-center">
-                                                <mat-icon>delete</mat-icon>
-                                            </button>
+                            <div class="tab-pane" id="pessoas">
+                                <div formGroupName="pessoas">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <mat-form-field class="example-full-width" appearance="fill">
+                                                <mat-label>Nome da Pessoa</mat-label>
+                                                <input type="text" placeholder="Nome da pessoa"
+                                                    aria-label="Nome da Pessoa" matInput formControlName="nome"
+                                                    [matAutocomplete]="auto">
+                                                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                                    <mat-option *ngFor="let option of filteredOptions | async"
+                                                        [value]="option">
+                                                        {{option}}
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                            </mat-form-field>
                                         </div>
-                                        
-                                    </ng-container>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <mat-form-field class="example-full-width" appearance="fill">
+                                                <mat-label>Apelido</mat-label>
+                                                <input type="text" placeholder="Apelido"
+                                                    aria-label="Apelido" matInput formControlName="apelido"
+                                                    [matAutocomplete]="auto">
+                                                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                                    <mat-option *ngFor="let option of filteredOptions | async"
+                                                        [value]="option">
+                                                        {{option}}
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <mat-form-field class="" appearance="fill">
+                                                <mat-label>Pai</mat-label>
+                                                <input type="text" placeholder="Nome do Pai" aria-label="Nome do Pai"
+                                                    matInput formControlName="pai" [matAutocomplete]="auto">
+                                                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                                    <mat-option *ngFor="let option of filteredOptions | async"
+                                                        [value]="option">
+                                                        {{option}}
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <mat-form-field class="example-full-width" appearance="fill">
+                                                <mat-label>Mãe</mat-label>
+                                                <input type="text" placeholder="Nome da Mãe" aria-label="Nome da Mãe"
+                                                    matInput formControlName="mae" [matAutocomplete]="auto">
+                                                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                                    <mat-option *ngFor="let option of filteredOptions | async"
+                                                        [value]="option">
+                                                        {{option}}
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <mat-form-field class="example-full-width" appearance="fill">
+                                                <mat-label>CPF</mat-label>
+                                                <input mask="000.000.000-00" type="text" placeholder="Digite o CPF"
+                                                    aria-label="Digite o CPF" matInput formControlName="cpf"
+                                                    [matAutocomplete]="auto"
+                                                    [showMaskTyped]="true" [dropSpecialCharacters]="false"
+                                                    >
+                                                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                                    <mat-option *ngFor="let option of filteredOptions | async"
+                                                        [value]="option">
+                                                        {{option}}
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-5">
+
+                                            <button (click)="adicionarPessoa()" mat-raised-button type="submit"
+                                                class="btn btn-info pull-center">
+                                                <i class="material-icons">
+                                                    person_add
+                                                </i>
+                                                Adicionar</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table mat-table matSort [dataSource]="dataSource" class="table table-hover">
+
+                                        <ng-container matColumnDef="Nome">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nome </th>
+                                            <td mat-cell *matCellDef="let element "> {{element.nome}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="CPF">
+                                            <th mat-header-cell *matHeaderCellDef> CPF </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.cpf}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="Pai">
+                                            <th mat-header-cell *matHeaderCellDef> Pai </th>
+                                            <td mat-cell *matCellDef="let element">
+                                                {{element.pai}}
+                                            </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="Mãe">
+                                            <th mat-header-cell *matHeaderCellDef> Mãe </th>
+                                            <td mat-cell *matCellDef="let element">
+                                                {{element.mae}}
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="Ações">
+                                            <th mat-header-cell *matHeaderCellDef> Ações </th>
+                                            <td mat-cell *matCellDef="let element , let idx = index">
+
+                                                <button mat-icon-button (click)="removerPessoa(element,idx)"
+                                                    title="remover">
+                                                    <mat-icon aria-label="Botão de remoção">
+                                                        delete_forever
+                                                    </mat-icon>
+                                                </button>
+
+                                            </td>
+                                        </ng-container>
+
+                                        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                                    </table>
+
+
+
+                                    <div fxFlexAlign="end" fxFlex="100">
+                                        <mat-paginator #paginator [pageSize]="50"
+                                            [pageSizeOptions]="[5, 10, 20 , 50, 100]" fxFlexAlign="end">
+                                        </mat-paginator>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- FIM PESSOAS -->
+
+                            <!-- VEICULOS -->
+                            <div class="tab-pane" id="veiculos">
+                                <div formGroupName="veiculos">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <mat-form-field class="example-full-width" appearance="fill">
+                                                <mat-label>Placa</mat-label>
+                                                <input type="text" placeholder="Digite a placa do carro"
+                                                    aria-label="Placa do Carro" matInput formControlName="placa"
+                                                    [matAutocomplete]="auto">
+                                                <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
+                                                    <mat-option *ngFor="let option of filteredOptions | async"
+                                                        [value]="option">
+                                                        {{option}}
+                                                    </mat-option>
+                                                </mat-autocomplete>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <mat-form-field class="example-full-width">
+                                                <input matInput placeholder="Descrição do veículo" name="descricao"
+                                                    id="descricao" formControlName="descricao">
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-5">
+
+                                            <button (click)="adicionarVeiculo()" mat-raised-button type="submit"
+                                                class="btn btn-info pull-center">
+                                                <i class="material-icons">
+                                                    add
+                                                </i>
+                                                Adicionar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table mat-table matSort [dataSource]="dataSourceVeiculo" class="table table-hover">
+
+                                        <ng-container matColumnDef="Placa">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Placa </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.placa}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="Descrição">
+                                            <th mat-header-cell *matHeaderCellDef> Descrição </th>
+                                            <td mat-cell *matCellDef="let element"> {{element.descricao}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="Ações">
+                                            <th mat-header-cell *matHeaderCellDef> Ações </th>
+                                            <td mat-cell *matCellDef="let element , let idx = index">
+
+                                                <button (click)="removerVeiculo(element,idx)" mat-icon-button
+                                                    title="remover">
+                                                    <mat-icon aria-label="Botão de remoção">
+                                                        delete_forever
+                                                    </mat-icon>
+                                                </button>
+
+                                            </td>
+                                        </ng-container>
+
+                                        <tr mat-header-row *matHeaderRowDef="displayedColumnsVeiculos"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: displayedColumnsVeiculos;"></tr>
+                                    </table>
+
+
+
+                                    <div fxFlexAlign="end" fxFlex="100">
+                                        <mat-paginator #paginator [pageSize]="50"
+                                            [pageSizeOptions]="[5, 10, 20 , 50, 100]" fxFlexAlign="end">
+                                        </mat-paginator>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- FIM VEICULOS -->
+
+                            <div class="tab-pane" id="fotos">
+
+                                <div class="col-md-12">
+                                    <input class="btn btn-dark pull-center" type="file" multiple
+                                        (change)="detectFiles($event)" accept="image/*">
 
                                 </div>
+
+
+                                <div formArrayName="arquivos" *ngFor="let t of arquivos.controls; let i = index">
+                                    <div [formGroupName]="i">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <img [src]="t.controls['tipoFileDto'].value.url" class="rounded mb-3"
+                                                    width="100%" height="auto">
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <textarea row="2" formControlName="arquivoTitulo"
+                                                    id="{{'arquivoTitulo'+i}}" type="text" class="form-control mb-4"
+                                                    placeholder="Digite a informação da foto"></textarea>
+
+                                                <button  mat-raised-button (click)="removerImagem(i)" title="Remover imagem"
+                                                    class="btn btn-danger pull-center">
+                                                    <i class="material-icons">delete</i>
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br><br>
+                                <hr />
+
+
+                                <!-- div class="row">
+                                    <div class="col-md-12">
+                                        <ng-container *ngFor="let url of urls; let i = index">
+                                            <div class="col-md-4">
+
+                                                <img [src]="url.url" class="rounded mb-3" width="100%" height="auto">
+
+                                                <mat-form-field class="example-full-width">
+                                                    <input type="text" placeholder="Informação da foto"
+                                                        [urls]="url.fileTitulo" aria-label="Informação da foto"
+                                                        matInput>
+                                                </mat-form-field>
+
+                                                <button (click)="teste()" title="Remover imagem"
+                                                    class="btn-danger pull-center">
+                                                    TESTANDO...
+                                                </button>
+
+                                                <button (click)="removerImagem(i)" title="Remover imagem"
+                                                    class="btn-danger pull-center">
+                                                    <mat-icon>delete</mat-icon>
+                                                </button>
+                                            </div>
+
+                                        </ng-container>
+                                    </div>
+                                </div -->
 
                                 <ng-container *ngFor="let aquivo of arquivosImagens; let i = index">
-                                    <div class="col-md-4">
-                                    <img [attr.src]="aquivo.url" name="{{aquivo.id}}" width="100%" height="auto">
-                                    <button (click)="deletarImagem(aquivo , index)" title="Deletar imagem"
-                                                class="btn-danger pull-center">
-                                                <mat-icon>delete</mat-icon>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <img loading="lazy" [attr.src]="aquivo.url" name="{{aquivo.id}}"
+                                                width="100%" height="auto" title="{{aquivo.titulo}}">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <p id="arquivoTitulo{{i}}">{{aquivo.titulo}}</p>
+                                            
+                                            <button  mat-raised-button (click)="deletarImagem(aquivo , i)" title="Remover imagem"
+                                            class="btn btn-danger pull-center" >
+                                                <i class="material-icons">delete</i>
                                             </button>
+                                            <button  mat-raised-button (click)="editarImagem(aquivo , i)" title="Editar texto da imagem"
+                                            class="btn btn-info pull-center" >
+                                                <i class="material-icons">edit_note</i>
+                                            </button>
+                                        </div>
                                     </div>
+                                    <br><br>
+                                    <hr />
                                 </ng-container>
+                            </div><!-- FIM FOTOS -->
+
+
+                            <!-- DOCUMENTOS -->
+                            <div class="tab-pane" id="documentos">
+
+
                             </div>
+
+                            <!-- FIM DOCUMENTOS -->
+
                         </div>
 
                         <button (click)="salvar()" mat-raised-button type="submit"

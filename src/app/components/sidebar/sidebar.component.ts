@@ -22,6 +22,9 @@ export const ROUTES: RouteInfo[] = [
     //{ path: '/informacao/cadastrar', title: 'Informação Incluir',  icon:'', class: '' },
     //{ path: '/informacao', title: 'Informações',  icon:'', class: '' },
     { path: '/informacao/consultar', title: 'Informações',  icon:'', class: '' },
+    { path: '/pessoa/consultar', title: 'Pessoas',  icon:'', class: '' },
+    { path: '/veiculo/consultar', title: 'Veículos',  icon:'', class: '' },
+    { path: '/arquivo/galeria', title: 'Galeria de Fotos',  icon:'', class: '' },
     
 ];
 
