@@ -41,6 +41,7 @@ export class InformacaoConsultarComponent implements OnInit {
 
     this.informacaoService.getAll().subscribe({
       next: (v) => {
+        console.log(v);
         this.listInformacao = v;
         this.dataSource = new MatTableDataSource<Informacao>(this.listInformacao);
         this.dataSource.paginator = this.paginator;

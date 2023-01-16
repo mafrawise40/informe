@@ -5,7 +5,7 @@ import { Timestamp } from "rxjs";
 export class Serializable { }
 export class BaseDTO extends Serializable {
 
- 
+
 
   dataInclusao?: Date;
   dataAlteracao?: Date
@@ -47,6 +47,10 @@ export class Pessoa extends BaseDTO {
   situacao: string;
   regiao: string;
   observacao: string;
+  nascimento: string;
+
+  arquivos: ArquivoPessoa[];
+  informacaoPessoas: InformacaoPessoa[];
   endereco: Endereco[];
   apelido: string;
   linkGenesis: string;
@@ -75,6 +79,16 @@ export class Arquivo extends BaseDTO {
 
 }
 
+export class ArquivoPessoa extends BaseDTO {
+
+  id: number;
+  descricao: string;
+  titulo: string;
+  arquivo: Blob;
+  url: SafeUrl;
+
+}
+
 
 export class Informacao extends BaseDTO {
 
@@ -91,6 +105,7 @@ export class Informacao extends BaseDTO {
   pessoasMat: string;
   veiculosMat: string;
   enderecoMat: string;
+  informePessoas: InformacaoPessoa[];
 
   //chip
   pessoasRemovidas: number[] = [];
@@ -116,4 +131,10 @@ export class TipoUrlFileDTO extends BaseDTO {
   url: any;
   fileName: any;
   fileTitulo: string;
+}
+
+export class InformacaoPessoa extends BaseDTO {
+  id: number;
+  pessoa: Pessoa;
+  envolvimento: string;
 }

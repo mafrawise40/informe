@@ -1,9 +1,10 @@
+import { PessoaService } from './../../services/pessoa.service';
 import { MarcadorService } from './../../services/marcador.service';
 import { MobileCheckUtils } from './../../util/MobileCheckUtil';
 import { element } from 'protractor';
 import { NotificationUtil } from './../../util/NotificationUtil';
 import { InformacaoService } from './../../services/informacao.service';
-import { Informacao, Pessoa, Veiculo, Endereco, Arquivo, TipoFileDTO, TipoUrlFileDTO } from './../../models/models.dto';
+import { Informacao, Pessoa, Veiculo, Endereco, Arquivo, TipoFileDTO, TipoUrlFileDTO, InformacaoPessoa } from './../../models/models.dto';
 import { AfterViewInit, Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { COMMA, ENTER, I, X } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -13,7 +14,7 @@ import { MarcadorMaps } from 'app/models/models.dto';
 import { AgmMap } from '@agm/core';
 import { google } from "google-maps";
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { delay, Observable } from 'rxjs';
+import { delay, map, Observable, startWith } from 'rxjs';
 import { NgxImageCompressService } from "ngx-image-compress";
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -27,15 +28,6 @@ import { DOCUMENT } from '@angular/common';
 
 declare var google: google;
 
-/*export interface Pessoas {
-  id: number;
-  name: string;
-}
-
-export interface Veiculos {
-  id: number;
-  name: string;
-}*/
 
 export interface Marker {
   lat: number;
@@ -82,26 +74,17 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
   arquivosImagens: Arquivo[] = []
   arquivosImagensLazy: string[] = []
 
-
-  //files: TipoFileDTO[] = [];
-  //urls: TipoUrlFileDTO[] = [];
-
   novasFotosFormControl: FormControl[] = [];
-
-
 
 
   informacaoDto: Informacao = new Informacao();
   formData: FormData = new FormData();
 
-  //pessoas
-  //nomePessoaControl = new FormControl();
-  //nomeDoPaiPessoaControl = new FormControl();
-  //nomeDaMaePessoaControl = new FormControl();
-  //cpfPessoaControl = new FormControl();
-  displayedColumns: string[] = ['Nome', 'CPF', 'Pai', 'Mãe', 'Ações'];
-  dataSource: MatTableDataSource<Pessoa> = new MatTableDataSource<Pessoa>();
+
+  displayedColumns: string[] = ['Nome', 'Envolvimento', 'CPF', 'Pai', 'Mãe', 'Ações'];
+  dataSource: MatTableDataSource<InformacaoPessoa> = new MatTableDataSource<InformacaoPessoa>();
   pessoasLista: Pessoa[] = [];
+  informacaoPessoaLista: InformacaoPessoa[] = [];
   pessoasRemovidas: number[] = []
 
 
@@ -116,7 +99,12 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
   displayedColumnsEnderecos: string[] = ['Informação', 'Endereço', 'Região', 'Latitude', 'Longitude', 'Ações'];
   dataSourceEnderecos: MatTableDataSource<MarcadorMaps> = new MatTableDataSource<MarcadorMaps>();
   enderecosLista: MarcadorMaps[] = [];
-  filteredOptions: Observable<string[]>;
+
+  idPessoa: number;
+  options: Pessoa[] = [];
+  filteredOptionsPessoas: Observable<Pessoa[]>;
+  filteredOptions: Observable<Pessoa[]>;
+
   filteredOptionsEnderecos: Observable<string[]>;
 
 
@@ -129,13 +117,92 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
     private imageCompress: NgxImageCompressService,
     private marcadorService: MarcadorService,
     private dialog: MatDialog,
+    private pessoaService: PessoaService,
     @Inject(DOCUMENT) document: Document
   ) { }
 
   ngOnInit(): void {
     this.criarFormulario();
 
+    this.filteredOptionsPessoas = this.formulario.get("pessoas").valueChanges.pipe(
+      startWith(''),
+      map(value => this._filter(value)),
+    );
 
+
+
+
+  }
+
+
+
+  carregarValorNoForm(element: Pessoa) {
+    this.formulario.get("pessoas").patchValue({
+      pai: element.pai,
+      mae: element.mae,
+      cpf: element.cpf,
+      nome: element.nome,
+      apelido: element.apelido,
+      nascimento: element.nascimento,
+    });
+    this.idPessoa = element.id;
+  }
+
+  private _filter(value: any): Pessoa[] {
+    console.log(value)
+
+    if ((value !== "" && value !== null && value !== undefined)
+      &&
+      ( (value.nome !== "" && value.nome !== null && value.nome !== undefined) ||
+        (value.cpf !== "" && value.cpf !== null && value.cpf !== undefined)  ||
+        (value.pai !== "" && value.pai !== null && value.pai !== undefined)  ||
+        (value.mae !== "" && value.mae !== null && value.mae !== undefined)  ||
+        (value.apelido !== "" && value.apelido !== null && value.apelido !== undefined) 
+        )   
+    ) {
+      const filterValue: string = value.nome as string;
+      const filterValueCpf: string = value.cpf as string;
+      const filterValuePai: string = value.pai as string;
+      const filterValueMae: string = value.mae as string;
+      const filterValueApelido: string = value.apelido as string;
+
+      let dto: Pessoa = {
+        id: null,
+        nome: filterValue,
+        rg: null,
+        cpf: filterValueCpf,
+        mae: filterValueMae,
+        pai: filterValuePai,
+        suspeita: null,
+        situacao: null,
+        regiao: null,
+        observacao: null,
+        endereco: null,
+        apelido: filterValueApelido,
+        linkGenesis: null,
+        detalhe: null,
+        informacaoPessoas: null,
+        nascimento: null,
+        arquivos: null,
+      }
+      this.pessoaService.getByParametros(dto).subscribe({
+        next: (v) => {
+
+          this.options = v;
+          return this.options;
+
+        },
+        error: (e) => {
+          NotificationUtil.showNotification('top', 'right', 'Erro ao tentar buscar pessoa. ', 4)
+        },
+        complete: () => {
+          return this.options;
+        }
+      })
+
+      return this.options;
+
+    }
   }
 
   ngAfterViewInit(): void {
@@ -154,7 +221,10 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
         nome: [null, Validators.required],
         pai: null,
         mae: null,
-        cpf: null
+        cpf: null,
+        apelido: null,
+        envolvimento: null,
+        nascimento: null,
       }),
       veiculos: this.formBuilder.group({
         placa: [null, Validators.required],
@@ -167,7 +237,7 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
       this.router.params.subscribe(params => {
         this.informacaoService.getById(params.id).subscribe({
           next: (v) => {
-
+            console.log(v);
             this.informacaoDto = v;
             this.formulario.patchValue({
               id: v.id,
@@ -175,9 +245,13 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
               detalhe: v.detalhe,
             });
 
-            if (v.pessoas) {
-              this.pessoasLista = v.pessoas;
-              this.dataSource = new MatTableDataSource<Pessoa>(this.pessoasLista);
+            if (v.informePessoas) {
+                v.informePessoas.forEach(element => {
+                this.pessoasLista.push(element.pessoa);
+              });
+
+              this.informacaoPessoaLista = v.informePessoas;
+              this.dataSource = new MatTableDataSource<InformacaoPessoa>(this.informacaoPessoaLista);
               this.dataSource.paginator = this.paginatorPessoas;
               this.dataSource.paginator._intl.itemsPerPageLabel = 'Exibir';
             }
@@ -296,45 +370,13 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
       VeiculoList.push(veiculoDTO);
     });
 
+
+
     this.informacaoDto.pessoas = pessoasList;
+    this.informacaoDto.informePessoas = this.informacaoPessoaLista;
     this.informacaoDto.veiculos = VeiculoList;
     this.informacaoDto.dataAlteracao = new Date();
     this.informacaoDto.dataInclusao = new Date();
-
-    //aqui faz manter o mesmo marcador...
-    /*if (this.editar) {
-      marcaroSelecionadoEditar = this.informacaoDto.marcadores[this.informacaoDto.marcadores.length - 1]
-    }*/
-
-    /*
-        this.router.params.subscribe(params => {
-          if (this.redirect.url.includes("latitude")) {
-            marcadorMapa.latitude = params['latitude'];
-            marcadorMapa.longitude = params['longitude'];
-    
-          }
-    
-    
-          if ((params['tipoInformacao'] !== undefined) || (this.editar)) {
-    
-            if (params['tipoInformacao'] === "carro" || (marcaroSelecionadoEditar.tipo == "carro")) {
-              marcadorMapa.tipo = 'carro'
-              marcadorMapa.tipoIcone = "'http://maps.google.com/mapfiles/kml/pal4/icon15.png'";
-            } else if (params['tipoInformacao'] === "pessoa" || (marcaroSelecionadoEditar.tipo == "pessoa")) {
-              marcadorMapa.tipo = 'pessoa'
-              marcadorMapa.tipoIcone = "'http://maps.google.com/mapfiles/kml/pal2/icon14.png'";
-            } else {
-    
-              marcadorMapa.tipo = 'informacao'
-              marcadorMapa.tipoIcone = "'http://maps.google.com/mapfiles/kml/pal4/icon49.png'";
-            }
-          } else if (params['tipoInformacao'] === undefined) {
-            marcadorMapa.open = 'true';
-            marcadorMapa.tipo = 'informacao';
-            marcadorMapa.tipoIcone = "'http://maps.google.com/mapfiles/kml/pal4/icon49.png'";
-          }
-    
-        });*/
 
 
     this.informacaoDto.marcadores = this.enderecosLista;
@@ -538,10 +580,10 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
         this.arquivoService.save(arquivo, true).subscribe({
           next: (res) => {
             NotificationUtil.showNotification('top', 'right', 'Informação alterada.', 2);
-            document.getElementById("arquivoTitulo"+i).innerText = result;
-        
+            document.getElementById("arquivoTitulo" + i).innerText = result;
+
             this.arquivosImagens[i] = arquivo;
-            this.informacaoDto.arquivos[i].titulo =  result;
+            this.informacaoDto.arquivos[i].titulo = result;
           },
           error: (error) => {
             NotificationUtil.showNotification('top', 'right', 'Falha ao alterar o titulo da imagem ' + error, 4);
@@ -723,14 +765,29 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
 
   adicionarPessoa() {
 
+    let informacaoPessoaDto: InformacaoPessoa = {
+      id: null,
+      pessoa: null,
+      envolvimento: null,
+    }
+
     if (this.formulario.get("pessoas").get("nome").valid) {
 
       let novaPessoa = this.formulario.get("pessoas").value as Pessoa;
+      if (this.idPessoa) {
+        novaPessoa.id = this.idPessoa;
+      }
+
+      informacaoPessoaDto.pessoa = novaPessoa;
+      informacaoPessoaDto.envolvimento = this.formulario.get("pessoas").get("envolvimento").value;
+
+      this.informacaoPessoaLista.push(informacaoPessoaDto);
       this.pessoasLista.push(novaPessoa);
-      this.dataSource = new MatTableDataSource<Pessoa>(this.pessoasLista);
+      this.dataSource = new MatTableDataSource<InformacaoPessoa>(this.informacaoPessoaLista);
       this.dataSource.paginator = this.paginatorPessoas;
       this.dataSource.paginator._intl.itemsPerPageLabel = 'Exibir';
       this.formulario.get("pessoas").reset();
+      this.idPessoa = null;
     } else {
       NotificationUtil.showNotification('top', 'right', 'O nome da pessoa é obrigatório', 4);
     }
@@ -742,10 +799,12 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
     this.informacaoDto.pessoasRemovidas = this.pessoasRemovidas;
 
     this.pessoasLista.splice(idx, 1);
-    this.dataSource = new MatTableDataSource<Pessoa>(this.pessoasLista);
+    this.informacaoPessoaLista.splice(idx, 1);
+    this.dataSource = new MatTableDataSource<InformacaoPessoa>(this.informacaoPessoaLista);
     this.dataSource.paginator = this.paginatorPessoas;
     this.dataSource.paginator._intl.itemsPerPageLabel = 'Exibir';
 
+    this.idPessoa = null;
 
 
   }

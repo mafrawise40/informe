@@ -279,9 +279,12 @@
                                                     aria-label="Nome da Pessoa" matInput formControlName="nome"
                                                     [matAutocomplete]="auto">
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                                                    <mat-option *ngFor="let option of filteredOptions | async"
-                                                        [value]="option">
-                                                        {{option}}
+                                                    <mat-option *ngFor="let option of filteredOptionsPessoas | async" (click)="carregarValorNoForm(option);"
+                                                        [value]="option.nome">
+                                                        {{option.nome}}({{option.apelido}}) - {{option.cpf}} 
+                                                        <ng-container *ngIf="option.mae">
+                                                        Mãe: {{option.mae}}
+                                                        </ng-container>
                                                     </mat-option>
                                                 </mat-autocomplete>
                                             </mat-form-field>
@@ -296,9 +299,12 @@
                                                     aria-label="Apelido" matInput formControlName="apelido"
                                                     [matAutocomplete]="auto">
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                                                    <mat-option *ngFor="let option of filteredOptions | async"
-                                                        [value]="option">
-                                                        {{option}}
+                                                    <mat-option *ngFor="let option of filteredOptionsPessoas | async" (click)="carregarValorNoForm(option);"
+                                                    [value]="option.nome">
+                                                    {{option.nome}}({{option.apelido}}) - {{option.cpf}} 
+                                                        <ng-container *ngIf="option.mae">
+                                                        Mãe: {{option.mae}}
+                                                        </ng-container>
                                                     </mat-option>
                                                 </mat-autocomplete>
                                             </mat-form-field>
@@ -312,9 +318,12 @@
                                                 <input type="text" placeholder="Nome do Pai" aria-label="Nome do Pai"
                                                     matInput formControlName="pai" [matAutocomplete]="auto">
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                                                    <mat-option *ngFor="let option of filteredOptions | async"
-                                                        [value]="option">
-                                                        {{option}}
+                                                    <mat-option *ngFor="let option of filteredOptionsPessoas | async" (click)="carregarValorNoForm(option);"
+                                                    [value]="option.nome">
+                                                    {{option.nome}}({{option.apelido}}) - {{option.cpf}} 
+                                                    <ng-container *ngIf="option.mae">
+                                                    Mãe: {{option.mae}}
+                                                    </ng-container>
                                                     </mat-option>
                                                 </mat-autocomplete>
                                             </mat-form-field>
@@ -325,9 +334,12 @@
                                                 <input type="text" placeholder="Nome da Mãe" aria-label="Nome da Mãe"
                                                     matInput formControlName="mae" [matAutocomplete]="auto">
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                                                    <mat-option *ngFor="let option of filteredOptions | async"
-                                                        [value]="option">
-                                                        {{option}}
+                                                    <mat-option *ngFor="let option of filteredOptionsPessoas | async" (click)="carregarValorNoForm(option);"
+                                                    [value]="option.nome">
+                                                    {{option.nome}}({{option.apelido}}) - {{option.cpf}} 
+                                                    <ng-container *ngIf="option.mae">
+                                                    Mãe: {{option.mae}}
+                                                    </ng-container>
                                                     </mat-option>
                                                 </mat-autocomplete>
                                             </mat-form-field>
@@ -346,13 +358,39 @@
                                                     [showMaskTyped]="true" [dropSpecialCharacters]="false"
                                                     >
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                                                    <mat-option *ngFor="let option of filteredOptions | async"
-                                                        [value]="option">
-                                                        {{option}}
+                                                    <mat-option *ngFor="let option of filteredOptionsPessoas | async" (click)="carregarValorNoForm(option);"
+                                                    [value]="option.nome">
+                                                    {{option.nome}}({{option.apelido}}) - {{option.cpf}} 
+                                                    <ng-container *ngIf="option.mae">
+                                                    Mãe: {{option.mae}}
+                                                    </ng-container>
                                                     </mat-option>
                                                 </mat-autocomplete>
                                             </mat-form-field>
                                         </div>
+
+                                        <div class="col-md-4">
+                                            <mat-form-field class="example-full-width" appearance="fill">
+                                                <mat-label>Data de Nascimento</mat-label>
+                                                <input mask="00/00/0000" type="text" placeholder="Data de Nascimento"
+                                                    aria-label="Data de Nascimento" matInput formControlName="nascimento"
+                                                    [showMaskTyped]="true" [dropSpecialCharacters]="false"
+                                                    >
+                                                
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <mat-form-field class="" appearance="fill">
+                                                <mat-label>Infomação adicional ?</mat-label>
+                                                <input type="text" placeholder="Informação adicional sobre o envolvimento das pessoas" aria-label="Informação adicional sobre o envolvimento das pessoas"
+                                                    matInput formControlName="envolvimento" >
+                                                
+                                            </mat-form-field>
+                                        </div>
+                                        
                                     </div>
 
                                     <div class="row">
@@ -373,30 +411,45 @@
 
                                         <ng-container matColumnDef="Nome">
                                             <th mat-header-cell *matHeaderCellDef mat-sort-header> Nome </th>
-                                            <td mat-cell *matCellDef="let element "> {{element.nome}} </td>
+                                            <td mat-cell *matCellDef="let element "> {{element.pessoa.nome}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="Envolvimento">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Envolvimento </th>
+                                            <td mat-cell *matCellDef="let element "> {{element.envolvimento}} </td>
                                         </ng-container>
 
                                         <ng-container matColumnDef="CPF">
                                             <th mat-header-cell *matHeaderCellDef> CPF </th>
-                                            <td mat-cell *matCellDef="let element"> {{element.cpf}} </td>
+                                            <td mat-cell *matCellDef="let element"> {{element.pessoa.cpf}} </td>
                                         </ng-container>
 
                                         <ng-container matColumnDef="Pai">
                                             <th mat-header-cell *matHeaderCellDef> Pai </th>
                                             <td mat-cell *matCellDef="let element">
-                                                {{element.pai}}
+                                                {{element.pessoa.pai}}
                                             </td>
                                         </ng-container>
 
                                         <ng-container matColumnDef="Mãe">
                                             <th mat-header-cell *matHeaderCellDef> Mãe </th>
                                             <td mat-cell *matCellDef="let element">
-                                                {{element.mae}}
+                                                {{element.pessoa.mae}}
                                         </ng-container>
+
+
 
                                         <ng-container matColumnDef="Ações">
                                             <th mat-header-cell *matHeaderCellDef> Ações </th>
                                             <td mat-cell *matCellDef="let element , let idx = index">
+
+
+                                                <button [routerLink]="['/pessoa/editar/' +element.pessoa?.id]" *ngIf="element.pessoa?.id" mat-icon-button 
+                                                    title="Editar"> 
+                                                    <mat-icon aria-label="Editar pessoa">
+                                                        edit
+                                                    </mat-icon>
+                                                </button>
 
                                                 <button mat-icon-button (click)="removerPessoa(element,idx)"
                                                     title="remover">
@@ -404,7 +457,7 @@
                                                         delete_forever
                                                     </mat-icon>
                                                 </button>
-
+                                                
                                             </td>
                                         </ng-container>
 
