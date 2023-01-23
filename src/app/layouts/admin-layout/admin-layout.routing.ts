@@ -1,3 +1,5 @@
+import { CadastrarVeiculosComponent } from './../../veiculos/cadastrar-veiculos/cadastrar-veiculos.component';
+import { ConsultarVeiculosComponent } from './../../veiculos/consultar-veiculos/consultar-veiculos.component';
 import { ConsultarPessoasComponent } from './../../pessoas/consultar-pessoas/consultar-pessoas.component';
 import { InformacaoComponent } from 'app/informacao/informacao/informacao.component';
 import { PainelComponent } from '../../painel/painel.component';
@@ -74,6 +76,10 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'pessoa/consultar',        component: ConsultarPessoasComponent },
     { path: 'pessoa/cadastrar',        component: CadastrarPessoasComponent },
     { path: 'pessoa/editar/:id',        component: CadastrarPessoasComponent },
+    { path: 'veiculo/consultar',        component: ConsultarVeiculosComponent },
+    { path: 'veiculo/cadastrar',        component: CadastrarVeiculosComponent },
+    { path: 'veiculo/editar/:id',        component: CadastrarVeiculosComponent },
+    
    
     
 ];

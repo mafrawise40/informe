@@ -36,6 +36,10 @@ import { NgxMaskModule } from 'ngx-mask';
 import { DialogoEditarTituloImagemComponent } from 'app/dialogo/dialogo-editar-titulo-imagem/dialogo-editar-titulo-imagem.component';
 import { ConsultarPessoasComponent } from 'app/pessoas/consultar-pessoas/consultar-pessoas.component';
 import { CadastrarPessoasComponent } from 'app/pessoas/cadastrar-pessoas/cadastrar-pessoas.component';
+import { ConsultarVeiculosComponent } from 'app/veiculos/consultar-veiculos/consultar-veiculos.component';
+import { PainelCaraterGeralComponent } from 'app/veiculos/carater-geral/painel-carater-geral/painel-carater-geral.component';
+import { CadastrarVeiculosComponent } from 'app/veiculos/cadastrar-veiculos/cadastrar-veiculos.component';
+import { DialogoVeiculoDesfechoComponent } from 'app/dialogo/dialogo-veiculo-desfecho/dialogo-veiculo-desfecho.component';
 
 
 
@@ -97,8 +101,13 @@ const MY_FORMATS = {
     InformacaoConsultarComponent,
     DialogoComponent,
     ConsultarPessoasComponent,
+    CadastrarVeiculosComponent,
+    ConsultarVeiculosComponent,
+    PainelCaraterGeralComponent,
     DialogoEditarTituloImagemComponent,
-    CadastrarPessoasComponent
+    DialogoVeiculoDesfechoComponent,
+    CadastrarPessoasComponent,
+    
   ],
   providers: [
     // { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: true } },

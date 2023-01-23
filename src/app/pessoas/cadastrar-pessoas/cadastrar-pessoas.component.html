@@ -1,0 +1,291 @@
+<div class="main-content">
+    <div class="container-fluid">
+
+
+
+        <div class="col-lg-12 col-md-12">
+            <div class="card">
+                <div class="card-header card-header-tabs card-header-info">
+                    <div class="nav-tabs-navigation">
+                        <div class="nav-tabs-wrapper">
+                            <span class="nav-tabs-title">Cadastro de Pessoas:</span>
+                            <ul class="nav nav-tabs" data-tabs="tabs">
+                                <li class="nav-item">
+                                    <a mat-button class="nav-link active" href="#dados" data-toggle="tab">
+                                        <i class="material-icons">badge</i> Dados Gerais
+                                        <div class="ripple-container"></div>
+                                    </a>
+                                </li>
+                               
+                                <li class="nav-item">
+                                    <a mat-button class="nav-link" href="#vinculos" data-toggle="tab">
+                                        <i class="material-icons">groups</i> Vinculos
+                                        <div class="ripple-container"></div>
+                                    </a>
+                                </li>
+                                
+                                <li class="nav-item">
+                                    <a mat-button class="nav-link" href="#fotos" 
+                                        data-toggle="tab">
+                                        <i class="material-icons">photo_library</i> Fotos
+                                        <div class="ripple-container"></div>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a mat-button class="nav-link" href="#documentos" data-toggle="tab">
+                                        <i class="material-icons">upload_file</i> Documentos
+                                        <div class="ripple-container"></div>
+                                    </a>
+                                </li>
+
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <form [formGroup]="formulario">
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <!-- DADOS GERAIS -->
+                            <div class="tab-pane active" id="dados">
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <mat-form-field class="example-full-width" appearance="fill">
+                                            <mat-label>Nome da Pessoa</mat-label>
+                                            <input type="text" placeholder="Nome da pessoa"
+                                                aria-label="Nome da Pessoa" matInput formControlName="nome"
+                                                >
+                                            
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <mat-form-field class="example-full-width" appearance="fill">
+                                            <mat-label>Apelido</mat-label>
+                                            <input type="text" placeholder="Apelido"
+                                                aria-label="Apelido" matInput formControlName="apelido"
+                                                >
+                                            
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <mat-form-field class="" appearance="fill">
+                                            <mat-label>Pai</mat-label>
+                                            <input type="text" placeholder="Nome do Pai" aria-label="Nome do Pai"
+                                                matInput formControlName="pai" >
+                                            
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <mat-form-field class="example-full-width" appearance="fill">
+                                            <mat-label>Mãe</mat-label>
+                                            <input type="text" placeholder="Nome da Mãe" aria-label="Nome da Mãe"
+                                                matInput formControlName="mae" >
+                                            
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <mat-form-field class="example-full-width" appearance="fill">
+                                            <mat-label>CPF</mat-label>
+                                            <input mask="000.000.000-00" type="text" placeholder="Digite o CPF"
+                                                aria-label="Digite o CPF" matInput formControlName="cpf"
+                                                [showMaskTyped]="true" [dropSpecialCharacters]="false"
+                                                >
+                                            
+                                        </mat-form-field>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <mat-form-field class="example-full-width" appearance="fill">
+                                            <mat-label>Data de Nascimento</mat-label>
+                                            <input mask="00/00/0000" type="text" placeholder="Data de Nascimento"
+                                                aria-label="Data de Nascimento" matInput formControlName="nascimento"
+                                                [showMaskTyped]="true" [dropSpecialCharacters]="false"
+                                                >
+                                            
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <mat-form-field class="example-full-width" appearance="fill">
+                                            <mat-label>Link genesis</mat-label>
+                                            <input type="text" placeholder="https://genesis.pm.df.gov.br/paginas/pessoas/pessoa.aspx?codigo=4c74ec2a-d892-4d37-868c-bebdb8d5ab88"
+                                                aria-label="Link Geneses" matInput formControlName="linkGenesis"
+                                                >
+                                            
+                                        </mat-form-field>
+                                    </div>
+                                </div>
+
+                                
+
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <label>Informação detalhada</label>
+                                        <mat-form-field class="Informação Completa">
+                                            <textarea rows="10" matInput
+                                                placeholder="Escreva aqui toda a informação sobre essa pessoa..." name="detalhe"
+                                                id="detalhe" formControlName="detalhe"></textarea>
+                                        </mat-form-field>
+
+                                    </div>
+                                </div>
+
+                                
+
+
+                            </div> <!-- FIM DADOS GERAIS -->
+
+
+                            
+
+                            <!-- VINCULOS -->
+
+                            <div class="tab-pane" id="vinculos">
+                                <div class="table-responsive">
+                                    <table mat-table matSort [dataSource]="dataSourceVinculo" class="table table-hover">
+
+                                        
+                                        <ng-container matColumnDef="Foto">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header>  </th>
+                                            <td mat-cell *matCellDef="let element ">  </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="Nome">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Nome </th>
+                                            <td mat-cell *matCellDef="let element "> 
+                                             <a [routerLink]="['/pessoa/editar/' +element.pessoa.id]" > {{element.pessoa.nome}} </a>   
+                                             </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="Apelido">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Apelido </th>
+                                            <td mat-cell *matCellDef="let element "> {{element.pessoa.apelido}} </td>
+                                        </ng-container>
+
+                                        <ng-container matColumnDef="Envolvimento">
+                                            <th mat-header-cell *matHeaderCellDef mat-sort-header> Envolvimento </th>
+                                            <td mat-cell *matCellDef="let element "> 
+                                                {{element.envolvimento}} 
+                                            </td>
+                                        </ng-container>
+
+                                        <tr mat-header-row *matHeaderRowDef="displayedColumnsVinculo"></tr>
+                                        <tr mat-row *matRowDef="let row; columns: displayedColumnsVinculo;"></tr>
+                                    </table>
+
+
+
+                                    <div fxFlexAlign="end" fxFlex="100">
+                                        <mat-paginator #paginator [pageSize]="50"
+                                            [pageSizeOptions]="[5, 10, 20 , 50, 100]" fxFlexAlign="end">
+                                        </mat-paginator>
+                                    </div>
+                                </div>
+                        
+                            </div>
+
+                            <!-- FIM VINCULOS -->
+
+                            
+
+                            <div class="tab-pane" id="fotos">
+
+                                <div class="col-md-12">
+                                    <input class="btn btn-dark pull-center" type="file" multiple
+                                        (change)="detectFiles($event)" accept="image/*">
+
+                                </div>
+
+
+                                <div formArrayName="arquivos" *ngFor="let t of arquivos.controls; let i = index">
+                                    <div [formGroupName]="i">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <img [src]="t.controls['tipoFileDto'].value.url" class="rounded mb-3"
+                                                    width="100%" height="auto">
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <textarea row="2" formControlName="arquivoTitulo"
+                                                    id="{{'arquivoTitulo'+i}}" type="text" class="form-control mb-4"
+                                                    placeholder="Digite a informação da foto"></textarea>
+
+                                                <button  mat-raised-button (click)="removerImagem(i)" title="Remover imagem"
+                                                    class="btn btn-danger pull-center">
+                                                    <i class="material-icons">delete</i>
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br><br>
+                                <hr />
+
+
+                            
+
+                                <ng-container *ngFor="let aquivo of arquivosImagens; let i = index">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <img loading="lazy" [attr.src]="aquivo.url" name="{{aquivo.id}}"
+                                                width="400" height="550" title="{{aquivo.titulo}}">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <p id="arquivoTitulo{{i}}">{{aquivo.titulo}}</p>
+                                            
+                                            <button  mat-raised-button (click)="deletarImagem(aquivo , i)" title="Remover imagem"
+                                            class="btn btn-danger pull-center" >
+                                                <i class="material-icons">delete</i>
+                                            </button>
+                                            <button  mat-raised-button (click)="editarImagem(aquivo , i)" title="Editar texto da imagem"
+                                            class="btn btn-info pull-center" >
+                                                <i class="material-icons">edit_note</i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <br><br>
+                                    <hr />
+                                </ng-container>
+                                
+                            </div><!-- FIM FOTOS -->
+
+
+                            <!-- DOCUMENTOS -->
+                            <div class="tab-pane" id="documentos">
+
+
+                            </div>
+
+                            <!-- FIM DOCUMENTOS -->
+
+                        </div>
+
+                        <button (click)="salvar()" mat-raised-button type="submit"
+                            class="btn btn-info pull-center">Salvar</button>
+                        <div class="clearfix"></div>
+
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+</div>

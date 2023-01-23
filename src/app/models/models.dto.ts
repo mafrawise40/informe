@@ -30,8 +30,14 @@ export class Veiculo extends BaseDTO {
 
   id: number;
   descricao: string;
+  informacoes: string;
+  proprietario: string;
+  endereco: string;
   placa: number;
   marcador: MarcadorMaps;
+  caraterGeral: string;
+  desfechoCaraterGeral: string;
+  dataAlteracao: Date;
 
 }
 

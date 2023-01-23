@@ -1,0 +1,16 @@
+<div>
+    <h1 mat-dialog-title>
+        Digite a nova informação da foto.
+    </h1>
+    
+    <mat-form-field appearance="fill">
+        <mat-label>Digite a informação aqui</mat-label>
+        <input matInput [(ngModel)]="textoInformacao">
+    </mat-form-field>
+    <div class="conf">
+        <div mat-dialog-actions>
+            <button mat-raised-button (click)="onSimClick()" color="primary">Confirmar</button>
+            <button mat-raised-button (click)="onNoClick()">Cancelar</button>
+        </div>
+    </div>
+</div>
