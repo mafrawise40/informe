@@ -76,12 +76,16 @@
 
 
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-8">
                                         <label>Informação detalhada</label>
                                         <mat-form-field class="Informação Completa">
-                                            <textarea rows="10" matInput
+                                            <textarea rows="{{linhasTextArea}}" matInput
                                                 placeholder="Escreva aqui toda a informação necessária" name="detalhe"
-                                                id="detalhe" formControlName="detalhe"></textarea>
+                                                id="detalhe" formControlName="detalhe"  
+                                                cdkTextareaAutosize
+                                                #autosize="cdkTextareaAutosize" 
+                                                cdkAutosizeMinRows="1"
+                                                cdkAutosizeMaxRows="50"></textarea>
                                         </mat-form-field>
 
                                     </div>
@@ -279,11 +283,11 @@
                                                     aria-label="Nome da Pessoa" matInput formControlName="nome"
                                                     [matAutocomplete]="auto">
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                                                    <mat-option *ngFor="let option of filteredOptionsPessoas | async" (click)="carregarValorNoForm(option);"
-                                                        [value]="option.nome">
-                                                        {{option.nome}}({{option.apelido}}) - {{option.cpf}} 
+                                                    <mat-option *ngFor="let option of filteredOptionsPessoas | async"
+                                                        (click)="carregarValorNoForm(option);" [value]="option.nome">
+                                                        {{option.nome}}({{option.apelido}}) - {{option.cpf}}
                                                         <ng-container *ngIf="option.mae">
-                                                        Mãe: {{option.mae}}
+                                                            Mãe: {{option.mae}}
                                                         </ng-container>
                                                     </mat-option>
                                                 </mat-autocomplete>
@@ -295,15 +299,14 @@
                                         <div class="col-md-12">
                                             <mat-form-field class="example-full-width" appearance="fill">
                                                 <mat-label>Apelido</mat-label>
-                                                <input type="text" placeholder="Apelido"
-                                                    aria-label="Apelido" matInput formControlName="apelido"
-                                                    [matAutocomplete]="auto">
+                                                <input type="text" placeholder="Apelido" aria-label="Apelido" matInput
+                                                    formControlName="apelido" [matAutocomplete]="auto">
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                                                    <mat-option *ngFor="let option of filteredOptionsPessoas | async" (click)="carregarValorNoForm(option);"
-                                                    [value]="option.nome">
-                                                    {{option.nome}}({{option.apelido}}) - {{option.cpf}} 
+                                                    <mat-option *ngFor="let option of filteredOptionsPessoas | async"
+                                                        (click)="carregarValorNoForm(option);" [value]="option.nome">
+                                                        {{option.nome}}({{option.apelido}}) - {{option.cpf}}
                                                         <ng-container *ngIf="option.mae">
-                                                        Mãe: {{option.mae}}
+                                                            Mãe: {{option.mae}}
                                                         </ng-container>
                                                     </mat-option>
                                                 </mat-autocomplete>
@@ -318,12 +321,12 @@
                                                 <input type="text" placeholder="Nome do Pai" aria-label="Nome do Pai"
                                                     matInput formControlName="pai" [matAutocomplete]="auto">
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                                                    <mat-option *ngFor="let option of filteredOptionsPessoas | async" (click)="carregarValorNoForm(option);"
-                                                    [value]="option.nome">
-                                                    {{option.nome}}({{option.apelido}}) - {{option.cpf}} 
-                                                    <ng-container *ngIf="option.mae">
-                                                    Mãe: {{option.mae}}
-                                                    </ng-container>
+                                                    <mat-option *ngFor="let option of filteredOptionsPessoas | async"
+                                                        (click)="carregarValorNoForm(option);" [value]="option.nome">
+                                                        {{option.nome}}({{option.apelido}}) - {{option.cpf}}
+                                                        <ng-container *ngIf="option.mae">
+                                                            Mãe: {{option.mae}}
+                                                        </ng-container>
                                                     </mat-option>
                                                 </mat-autocomplete>
                                             </mat-form-field>
@@ -334,12 +337,12 @@
                                                 <input type="text" placeholder="Nome da Mãe" aria-label="Nome da Mãe"
                                                     matInput formControlName="mae" [matAutocomplete]="auto">
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                                                    <mat-option *ngFor="let option of filteredOptionsPessoas | async" (click)="carregarValorNoForm(option);"
-                                                    [value]="option.nome">
-                                                    {{option.nome}}({{option.apelido}}) - {{option.cpf}} 
-                                                    <ng-container *ngIf="option.mae">
-                                                    Mãe: {{option.mae}}
-                                                    </ng-container>
+                                                    <mat-option *ngFor="let option of filteredOptionsPessoas | async"
+                                                        (click)="carregarValorNoForm(option);" [value]="option.nome">
+                                                        {{option.nome}}({{option.apelido}}) - {{option.cpf}}
+                                                        <ng-container *ngIf="option.mae">
+                                                            Mãe: {{option.mae}}
+                                                        </ng-container>
                                                     </mat-option>
                                                 </mat-autocomplete>
                                             </mat-form-field>
@@ -354,16 +357,15 @@
                                                 <mat-label>CPF</mat-label>
                                                 <input mask="000.000.000-00" type="text" placeholder="Digite o CPF"
                                                     aria-label="Digite o CPF" matInput formControlName="cpf"
-                                                    [matAutocomplete]="auto"
-                                                    [showMaskTyped]="true" [dropSpecialCharacters]="false"
-                                                    >
+                                                    [matAutocomplete]="auto" [showMaskTyped]="true"
+                                                    [dropSpecialCharacters]="false">
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-                                                    <mat-option *ngFor="let option of filteredOptionsPessoas | async" (click)="carregarValorNoForm(option);"
-                                                    [value]="option.nome">
-                                                    {{option.nome}}({{option.apelido}}) - {{option.cpf}} 
-                                                    <ng-container *ngIf="option.mae">
-                                                    Mãe: {{option.mae}}
-                                                    </ng-container>
+                                                    <mat-option *ngFor="let option of filteredOptionsPessoas | async"
+                                                        (click)="carregarValorNoForm(option);" [value]="option.nome">
+                                                        {{option.nome}}({{option.apelido}}) - {{option.cpf}}
+                                                        <ng-container *ngIf="option.mae">
+                                                            Mãe: {{option.mae}}
+                                                        </ng-container>
                                                     </mat-option>
                                                 </mat-autocomplete>
                                             </mat-form-field>
@@ -373,10 +375,10 @@
                                             <mat-form-field class="example-full-width" appearance="fill">
                                                 <mat-label>Data de Nascimento</mat-label>
                                                 <input mask="00/00/0000" type="text" placeholder="Data de Nascimento"
-                                                    aria-label="Data de Nascimento" matInput formControlName="nascimento"
-                                                    [showMaskTyped]="true" [dropSpecialCharacters]="false"
-                                                    >
-                                                
+                                                    aria-label="Data de Nascimento" matInput
+                                                    formControlName="nascimento" [showMaskTyped]="true"
+                                                    [dropSpecialCharacters]="false">
+
                                             </mat-form-field>
                                         </div>
                                     </div>
@@ -385,12 +387,14 @@
                                         <div class="col-md-12">
                                             <mat-form-field class="" appearance="fill">
                                                 <mat-label>Infomação adicional ?</mat-label>
-                                                <input type="text" placeholder="Informação adicional sobre o envolvimento das pessoas" aria-label="Informação adicional sobre o envolvimento das pessoas"
-                                                    matInput formControlName="envolvimento" >
-                                                
+                                                <input type="text"
+                                                    placeholder="Informação adicional sobre o envolvimento das pessoas"
+                                                    aria-label="Informação adicional sobre o envolvimento das pessoas"
+                                                    matInput formControlName="envolvimento">
+
                                             </mat-form-field>
                                         </div>
-                                        
+
                                     </div>
 
                                     <div class="row">
@@ -444,8 +448,8 @@
                                             <td mat-cell *matCellDef="let element , let idx = index">
 
 
-                                                <button [routerLink]="['/pessoa/editar/' +element.pessoa?.id]" *ngIf="element.pessoa?.id" mat-icon-button 
-                                                    title="Editar"> 
+                                                <button [routerLink]="['/pessoa/editar/' +element.pessoa?.id]"
+                                                    *ngIf="element.pessoa?.id" mat-icon-button title="Editar">
                                                     <mat-icon aria-label="Editar pessoa">
                                                         edit
                                                     </mat-icon>
@@ -457,7 +461,7 @@
                                                         delete_forever
                                                     </mat-icon>
                                                 </button>
-                                                
+
                                             </td>
                                         </ng-container>
 
@@ -585,8 +589,8 @@
                                                     id="{{'arquivoTitulo'+i}}" type="text" class="form-control mb-4"
                                                     placeholder="Digite a informação da foto"></textarea>
 
-                                                <button  mat-raised-button (click)="removerImagem(i)" title="Remover imagem"
-                                                    class="btn btn-danger pull-center">
+                                                <button mat-raised-button (click)="removerImagem(i)"
+                                                    title="Remover imagem" class="btn btn-danger pull-center">
                                                     <i class="material-icons">delete</i>
                                                 </button>
 
@@ -635,13 +639,13 @@
 
                                         <div class="col-md-6">
                                             <p id="arquivoTitulo{{i}}">{{aquivo.titulo}}</p>
-                                            
-                                            <button  mat-raised-button (click)="deletarImagem(aquivo , i)" title="Remover imagem"
-                                            class="btn btn-danger pull-center" >
+
+                                            <button mat-raised-button (click)="deletarImagem(aquivo , i)"
+                                                title="Remover imagem" class="btn btn-danger pull-center">
                                                 <i class="material-icons">delete</i>
                                             </button>
-                                            <button  mat-raised-button (click)="editarImagem(aquivo , i)" title="Editar texto da imagem"
-                                            class="btn btn-info pull-center" >
+                                            <button mat-raised-button (click)="editarImagem(aquivo , i)"
+                                                title="Editar texto da imagem" class="btn btn-info pull-center">
                                                 <i class="material-icons">edit_note</i>
                                             </button>
                                         </div>

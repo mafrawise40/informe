@@ -1,0 +1,582 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <form [formGroup]="formulario">
+
+
+            <div class="col-lg-12 col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-danger card-header-text">
+                        <div class="card-text">
+                            <h4 class="card-title">RELATÓRIO DE SERVIÇO ORDINÁRIO VELADO</h4>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="col-md-2">
+                                <mat-form-field appearance="fill">
+                                    <mat-label>Data</mat-label>
+                                    <input formControlName="data" matInput [matDatepicker]="picker">
+                                    <mat-hint>DD/MM/YYYY</mat-hint>
+                                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                                    <mat-datepicker #picker></mat-datepicker>
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-md-2">
+                                <mat-form-field class="example-full-width">
+                                    <input (input)="atualizarAssuncao($event)" matInput placeholder="UPM apoiadora"
+                                        name="upm" id="upm" formControlName="upm">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-md-2">
+                                <mat-form-field class="example-full-width">
+                                    <input type="text" matInput placeholder="Horário" name="horario" id="horario"
+                                        formControlName="horario">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-md-2">
+                                <mat-form-field class="example-full-width">
+                                    <input (input)="atualizarAssuncao($event)" matInput placeholder="Ordem de Serviço"
+                                        name="ordemServico" id="ordemServico" formControlName="ordemServico">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <!-- <div class="row">
+                            <div class="col-md-2">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Informação" name="informacao" id="informacao"
+                                        formControlName="informacao">
+                                </mat-form-field>
+                            </div>
+                        </div> -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Agentes. Ex: SGT FULANO, CB FULANO" name="agentes"
+                                        id="agentes" formControlName="agentes">
+                                </mat-form-field>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                        </div>
+
+
+                        <div class="row">
+
+                            <div class="col-md-2">
+                                <mat-form-field class="example-full-width">
+                                    <input matInput placeholder="Viatura" name="viatura" id="viatura"
+                                        formControlName="viatura">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-md-2">
+                                <mat-form-field class="example-full-width">
+                                    <input type="text" matInput placeholder="Odômetro inicial" name="odometroInicial"
+                                        id="odometroInicial" formControlName="odometroInicial">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-md-2">
+                                <mat-form-field class="example-full-width">
+                                    <input type="text" matInput placeholder="Odômetro Final" name="odometroFinal"
+                                        id="odometroFinal" formControlName="odometroFinal">
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+
+
+            <div class="col-lg-12 col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-danger card-header-text">
+                        <div class="card-text">
+                            <h4 class="card-title">1. ASSUNÇÃO DO SERVIÇO:</h4>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="col-md-12">
+                            <mat-form-field class="example-full-width">
+                                <textarea rows="3" matInput name="assuncao" id="assuncao"
+                                    formControlName="assuncao"></textarea>
+                            </mat-form-field>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-danger card-header-icon">
+                        <div class="card-icon"><i class="material-icons">assignment</i></div>
+                        <h4 class="card-title"><b style="color: black;">2. OCORRÊNCIAS CONDUZIDAS PELA EQUIPE DE
+                                INTELIGÊNCIA:</b></h4>
+                        <div class="togglebutton">
+                            <label>
+                                <input (click)="habilitarDesabilitarTabela(2 , $event)" type="checkbox"
+                                    value="check02"><span class="toggle"></span>
+                                Clique aqui para habilitar a seleção das informações.
+                            </label>
+                        </div>
+                    </div>
+
+
+
+                    <div class="card-body" *ngIf="tabela02">
+
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="input-group-prepend"><span class="input-group-text"><i
+                                            class="material-icons">search</i>
+                                    </span>
+                                </div>
+                                <mat-form-field class="example-full-width">
+                                    <input (input)="pesquisarInformacao(2)" matInput placeholder="Pesquisar Informação"
+                                        name="pesquisaInformacao02" id="pesquisaInformacao02"
+                                        formControlName="pesquisaInformacao02">
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table mat-table matSort [dataSource]="dataSourceInformacao02" class="table table-hover">
+                                <ng-container matColumnDef="select">
+                                    <mat-header-cell *matHeaderCellDef>
+                                        <mat-checkbox (change)="$event ? masterToggle(2) : null"
+                                            [checked]="selection02.hasValue() && isAllSelected(2)"
+                                            [indeterminate]="selection02.hasValue() && !isAllSelected(2)">
+                                        </mat-checkbox>
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let row">
+                                        <mat-checkbox (click)="$event.stopPropagation()"
+                                            (change)="$event ? selection02.toggle(row) : null"
+                                            [checked]="selection02.isSelected(row)">
+                                        </mat-checkbox>
+                                    </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="numero">
+                                    <th mat-header-cell *matHeaderCellDef> Nº </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="informacao">
+                                    <th mat-header-cell *matHeaderCellDef> Informação </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.detalhe.substr(0,100)}}... </td>
+                                </ng-container>
+
+
+
+                                <ng-container matColumnDef="opcoes">
+                                    <th mat-header-cell *matHeaderCellDef> Opções </th>
+                                    <td mat-cell *matCellDef="let element">
+
+                                        <button mat-icon-button title="Editar" (click)="editar(element)">
+                                            <mat-icon aria-label="Botão de Edição">
+                                                search
+                                            </mat-icon>
+                                        </button>
+
+
+
+
+                                    </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns02"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns02;"
+                                    (click)="selection02.toggle(row)"></tr>
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-info card-header-icon">
+                        <div class="card-icon"><i class="material-icons">assignment</i></div>
+                        <h4 class="card-title"><b style="color: black;">3. OCORRÊNCIAS APOIADAS PELA EQUIPE DE
+                                INTELIGÊNCIA:</b></h4>
+                        <div class="togglebutton">
+                            <label>
+                                <input (click)="habilitarDesabilitarTabela(3 , $event)" type="checkbox"
+                                    value="check03"><span class="toggle"></span>
+                                Clique aqui para habilitar a seleção das informações.
+                            </label>
+                        </div>
+                    </div>
+                    <div class="card-body" *ngIf="tabela03">
+                        <div class="col-md-3">
+                            <div class="input-group-prepend"><span class="input-group-text"><i
+                                        class="material-icons">search</i>
+                                </span>
+                            </div>
+                            <mat-form-field class="example-full-width">
+                                <input (input)="pesquisarInformacao(3)" matInput placeholder="Pesquisar Informação"
+                                    name="pesquisaInformacao02" id="pesquisaInformacao02"
+                                    formControlName="pesquisaInformacao02">
+                            </mat-form-field>
+                        </div>
+                        <div class="table-responsive">
+                            <table mat-table matSort [dataSource]="dataSourceInformacao03" class="table table-hover">
+
+
+                                <ng-container matColumnDef="select">
+                                    <mat-header-cell *matHeaderCellDef>
+                                        <mat-checkbox (change)="$event ? masterToggle(3) : null"
+                                            [checked]="selection03.hasValue() && isAllSelected(3)"
+                                            [indeterminate]="selection03.hasValue() && !isAllSelected(3)">
+                                        </mat-checkbox>
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let row">
+                                        <mat-checkbox (click)="$event.stopPropagation()"
+                                            (change)="$event ? selection03.toggle(row) : null"
+                                            [checked]="selection03.isSelected(row)">
+                                        </mat-checkbox>
+                                    </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="numero">
+                                    <th mat-header-cell *matHeaderCellDef> Nº </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="informacao">
+                                    <th mat-header-cell *matHeaderCellDef> Informação </th>
+                                    <td mat-cell *matCellDef="let element">  {{element.detalhe.substr(0,100)}}...  </td>
+                                </ng-container>
+
+
+
+                                <ng-container matColumnDef="opcoes">
+                                    <th mat-header-cell *matHeaderCellDef> Opções </th>
+                                    <td mat-cell *matCellDef="let element">
+
+                                        <button mat-icon-button title="Editar" (click)="editar(element)">
+                                            <mat-icon aria-label="Botão de Edição">
+                                                search
+                                            </mat-icon>
+                                        </button>
+
+
+
+
+                                    </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns03"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns03;"
+                                    (click)="selection03.toggle(row)"></tr>
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-danger card-header-icon">
+                        <div class="card-icon"><i class="material-icons">assignment</i></div>
+                        <h4 class="card-title"><b style="color: black;">4. OCORRÊNCIAS DE VULTO:</b></h4>
+                        <div class="togglebutton">
+                            <label>
+                                <input (click)="habilitarDesabilitarTabela(4 , $event)" type="checkbox"
+                                    value="check04"><span class="toggle"></span>
+                                Clique aqui para habilitar a seleção das informações.
+                            </label>
+                        </div>
+                    </div>
+                    <div class="card-body" *ngIf="tabela04">
+                        <div class="col-md-3">
+                            <div class="input-group-prepend"><span class="input-group-text"><i
+                                        class="material-icons">search</i>
+                                </span>
+                            </div>
+                            <mat-form-field class="example-full-width">
+                                <input (input)="pesquisarInformacao(4)" matInput placeholder="Pesquisar Informação"
+                                    name="pesquisaInformacao02" id="pesquisaInformacao02"
+                                    formControlName="pesquisaInformacao02">
+                            </mat-form-field>
+                        </div>
+                        <div class="table-responsive">
+                            <table mat-table matSort [dataSource]="dataSourceInformacao04" class="table table-hover">
+
+
+                                <ng-container matColumnDef="select">
+                                    <mat-header-cell *matHeaderCellDef>
+                                        <mat-checkbox (change)="$event ? masterToggle(4) : null"
+                                            [checked]="selection04.hasValue() && isAllSelected(4)"
+                                            [indeterminate]="selection04.hasValue() && !isAllSelected(4)">
+                                        </mat-checkbox>
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let row">
+                                        <mat-checkbox (click)="$event.stopPropagation()"
+                                            (change)="$event ? selection04.toggle(row) : null"
+                                            [checked]="selection04.isSelected(row)">
+                                        </mat-checkbox>
+                                    </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="numero">
+                                    <th mat-header-cell *matHeaderCellDef> Nº </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="informacao">
+                                    <th mat-header-cell *matHeaderCellDef> Informação </th>
+                                    <td mat-cell *matCellDef="let element">  {{element.detalhe.substr(0,100)}}...  </td>
+                                </ng-container>
+
+
+
+                                <ng-container matColumnDef="opcoes">
+                                    <th mat-header-cell *matHeaderCellDef> Opções </th>
+                                    <td mat-cell *matCellDef="let element">
+
+                                        <button mat-icon-button title="Editar" (click)="editar(element)">
+                                            <mat-icon aria-label="Botão de Edição">
+                                                search
+                                            </mat-icon>
+                                        </button>
+
+
+
+
+                                    </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns04"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns04;"
+                                    (click)="selection04.toggle(row)"></tr>
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-danger card-header-icon">
+                        <div class="card-icon"><i class="material-icons">assignment</i></div>
+                        <h4 class="card-title"><b style="color: black;">5. OCORRÊNCIAS ENVOLVENDO POLICIAIS MILITARES DA
+                                ATIVA, RESERVA/REFORMADOS OU
+                                DE OUTROS ESTADOS:</b></h4>
+                        <div class="togglebutton">
+                            <label>
+                                <input (click)="habilitarDesabilitarTabela(5 , $event)" type="checkbox"
+                                    value="check05"><span class="toggle"></span>
+                                Clique aqui para habilitar a seleção das informações.
+                            </label>
+                        </div>
+                    </div>
+                    <div class="card-body" *ngIf="tabela05">
+                        <div class="col-md-3">
+                            <div class="input-group-prepend"><span class="input-group-text"><i
+                                        class="material-icons">search</i>
+                                </span>
+                            </div>
+                            <mat-form-field class="example-full-width">
+                                <input (input)="pesquisarInformacao(2)" matInput placeholder="Pesquisar Informação"
+                                    name="pesquisaInformacao02" id="pesquisaInformacao02"
+                                    formControlName="pesquisaInformacao02">
+                            </mat-form-field>
+                        </div>
+                        <div class="table-responsive">
+                            <table mat-table matSort [dataSource]="dataSourceInformacao05" class="table table-hover">
+
+
+                                <ng-container matColumnDef="select">
+                                    <mat-header-cell *matHeaderCellDef>
+                                        <mat-checkbox (change)="$event ? masterToggle(5) : null"
+                                            [checked]="selection05.hasValue() && isAllSelected(5)"
+                                            [indeterminate]="selection05.hasValue() && !isAllSelected(5)">
+                                        </mat-checkbox>
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let row">
+                                        <mat-checkbox (click)="$event.stopPropagation()"
+                                            (change)="$event ? selection05.toggle(row) : null"
+                                            [checked]="selection05.isSelected(row)">
+                                        </mat-checkbox>
+                                    </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="numero">
+                                    <th mat-header-cell *matHeaderCellDef> Nº </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="informacao">
+                                    <th mat-header-cell *matHeaderCellDef> Informação </th>
+                                    <td mat-cell *matCellDef="let element">  {{element.detalhe.substr(0,100)}}...  </td>
+                                </ng-container>
+
+
+
+                                <ng-container matColumnDef="opcoes">
+                                    <th mat-header-cell *matHeaderCellDef> Opções </th>
+                                    <td mat-cell *matCellDef="let element">
+
+                                        <button mat-icon-button title="Editar" (click)="editar(element)">
+                                            <mat-icon aria-label="Botão de Edição">
+                                                search
+                                            </mat-icon>
+                                        </button>
+
+
+
+
+                                    </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns05"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns05;"
+                                    (click)="selection05.toggle(row)"></tr>
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-danger card-header-icon">
+                        <div class="card-icon"><i class="material-icons">assignment</i></div>
+                        <h4 class="card-title"><b style="color: black;">6. OBSERVAÇÕES GERAIS:</b></h4>
+                        <div class="togglebutton">
+                            <label>
+                                <input (click)="habilitarDesabilitarTabela(6 , $event)" type="checkbox"
+                                    value="check06"><span class="toggle"></span>
+                                Clique aqui para habilitar a seleção das informações.
+                            </label>
+                        </div>
+                    </div>
+                    <div class="card-body" *ngIf="tabela06">
+                        <div class="col-md-3">
+                            <div class="input-group-prepend"><span class="input-group-text"><i
+                                        class="material-icons">search</i>
+                                </span>
+                            </div>
+                            <mat-form-field class="example-full-width">
+                                <input (input)="pesquisarInformacao(6)" matInput placeholder="Pesquisar Informação"
+                                    name="pesquisaInformacao02" id="pesquisaInformacao02"
+                                    formControlName="pesquisaInformacao02">
+                            </mat-form-field>
+                        </div>
+                        <div class="table-responsive">
+                            <table mat-table matSort [dataSource]="dataSourceInformacao06" class="table table-hover">
+
+
+                                <ng-container matColumnDef="select">
+                                    <mat-header-cell *matHeaderCellDef>
+                                        <mat-checkbox (change)="$event ? masterToggle(6) : null"
+                                            [checked]="selection06.hasValue() && isAllSelected(6)"
+                                            [indeterminate]="selection06.hasValue() && !isAllSelected(6)">
+                                        </mat-checkbox>
+                                    </mat-header-cell>
+                                    <mat-cell *matCellDef="let row">
+                                        <mat-checkbox (click)="$event.stopPropagation()"
+                                            (change)="$event ? selection06.toggle(row) : null"
+                                            [checked]="selection06.isSelected(row)">
+                                        </mat-checkbox>
+                                    </mat-cell>
+                                </ng-container>
+
+                                <ng-container matColumnDef="numero">
+                                    <th mat-header-cell *matHeaderCellDef> Nº </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="informacao">
+                                    <th mat-header-cell *matHeaderCellDef> Informação </th>
+                                    <td mat-cell *matCellDef="let element">  {{element.detalhe.substr(0,100)}}...  </td>
+                                </ng-container>
+
+
+
+                                <ng-container matColumnDef="opcoes">
+                                    <th mat-header-cell *matHeaderCellDef> Opções </th>
+                                    <td mat-cell *matCellDef="let element">
+
+                                        <button mat-icon-button title="Editar" (click)="editar(element)">
+                                            <mat-icon aria-label="Botão de Edição">
+                                                search
+                                            </mat-icon>
+                                        </button>
+
+
+
+
+                                    </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns06"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns06;"
+                                    (click)="selection06.toggle(row)"></tr>
+                            </table>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-12 col-md-12">
+                <div class="card">
+                    <div class="card-header card-header-danger card-header-text">
+                        <div class="card-text">
+                            <h4 class="card-title">7. TÉRMINO DO SERVIÇO:</h4>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="col-md-12">
+                            <mat-form-field class="example-full-width">
+                                <textarea rows="3" matInput name="termino" id="termino"
+                                    formControlName="termino"></textarea>
+                            </mat-form-field>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <button (click)="gerar()" mat-raised-button type="submit" class="btn btn-info pull-center">Gerar</button>
+            <div class="clearfix"></div>
+        </form>
+    </div>
+</div>

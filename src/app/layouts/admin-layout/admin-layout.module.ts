@@ -27,6 +27,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { AgmCoreModule } from '@agm/core';
 import { MatMomentDateModule, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 import localePtBr from '@angular/common/locales/pt';
 import { InformacaoComponent } from 'app/informacao/informacao/informacao.component';
 import { DialogoComponent } from 'app/dialogo/dialogo.component';
@@ -40,6 +41,8 @@ import { ConsultarVeiculosComponent } from 'app/veiculos/consultar-veiculos/cons
 import { PainelCaraterGeralComponent } from 'app/veiculos/carater-geral/painel-carater-geral/painel-carater-geral.component';
 import { CadastrarVeiculosComponent } from 'app/veiculos/cadastrar-veiculos/cadastrar-veiculos.component';
 import { DialogoVeiculoDesfechoComponent } from 'app/dialogo/dialogo-veiculo-desfecho/dialogo-veiculo-desfecho.component';
+import { RelatorioInformacaoComponent } from 'app/relatorio/relatorio-informacao/relatorio-informacao.component';
+import { Tabela02Component } from 'app/relatorio/relatorio-informacao/tabela02/tabela02.component';
 
 
 
@@ -79,6 +82,7 @@ const MY_FORMATS = {
     MatAutocompleteModule,
     MatPaginatorModule,
     MatDialogModule,
+    MatCheckboxModule,
     NgxMaskModule.forRoot(),
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyDGlzRnmM71wtSqB2qXj8L7nCdOGqvszz0'
@@ -107,6 +111,8 @@ const MY_FORMATS = {
     DialogoEditarTituloImagemComponent,
     DialogoVeiculoDesfechoComponent,
     CadastrarPessoasComponent,
+    RelatorioInformacaoComponent,
+    Tabela02Component,
     
   ],
   providers: [

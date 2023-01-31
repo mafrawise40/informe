@@ -19,7 +19,7 @@ export class InformacaoConsultarComponent implements OnInit {
   informacaoDto: Informacao;
   listInformacao: Informacao[];
 
-  displayedColumns: string[] = ['Título', 'Informação', 'Pessoas', 'Veículo', 'Endereço', 'Atualização', 'Ações'];
+  displayedColumns: string[] = ['Nº' , 'Título', 'Informação', 'Pessoas', 'Veículo', 'Endereço', 'Atualização', 'Ações'];
   dataSource: MatTableDataSource<Informacao> = new MatTableDataSource<Informacao>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;

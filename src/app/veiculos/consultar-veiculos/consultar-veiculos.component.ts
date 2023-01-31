@@ -33,6 +33,8 @@ export class ConsultarVeiculosComponent implements OnInit {
   dataSourceVeiculoCageral: MatTableDataSource<Veiculo> = new MatTableDataSource<Veiculo>();
   veiculosListaCaGeral: Veiculo[] = [];
 
+  palavraPesquisada: string = "";
+
   constructor(private veiculoService: VeiculoService,
     private dialog: MatDialog,
     private redirect: Router
@@ -147,7 +149,13 @@ export class ConsultarVeiculosComponent implements OnInit {
     this.redirect.navigate(['veiculo/editar/', element.id]);
   }
 
-
+  public doFilter = (value: string) => {
+    this.palavraPesquisada = value;
+    localStorage.setItem('pesquisaVeiculo', this.palavraPesquisada);
+    this.dataSourceVeiculo.filter = this.palavraPesquisada;
+    this.dataSourceVeiculo.paginator = this.paginatorVeiculos;
+    this.dataSourceVeiculo.paginator._intl.itemsPerPageLabel = 'Exibir';
+  }
 
 
 }

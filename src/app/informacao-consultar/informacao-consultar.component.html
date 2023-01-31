@@ -33,6 +33,11 @@
                         <div class="table-responsive">
                             <table mat-table matSort [dataSource]="dataSource" class="table table-hover">
 
+                                <ng-container matColumnDef="Nº">
+                                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Nº </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+                                </ng-container>
+
                                 <ng-container matColumnDef="Título">
                                     <th mat-header-cell *matHeaderCellDef mat-sort-header> Título </th>
                                     <td mat-cell *matCellDef="let element"> {{element.titulo}} </td>

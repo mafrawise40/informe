@@ -1,0 +1,58 @@
+<div class="table-responsive">
+    <table mat-table matSort [dataSource]="dataSourceInformacao02" class="table table-hover">
+
+
+        <ng-container matColumnDef="select">
+            <mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="$event ? masterToggle(2) : null"
+                    [checked]="selection02.hasValue() && isAllSelected(2)"
+                    [indeterminate]="selection02.hasValue() && !isAllSelected(2)">
+                </mat-checkbox>
+            </mat-header-cell>
+            <mat-cell *matCellDef="let row">
+                <mat-checkbox (click)="$event.stopPropagation()"
+                    (change)="$event ? selection02.toggle(row) : null"
+                    [checked]="selection02.isSelected(row)">
+                </mat-checkbox>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="numero">
+            <th mat-header-cell *matHeaderCellDef> Nº </th>
+            <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="informacao">
+            <th mat-header-cell *matHeaderCellDef> Informação </th>
+            <td mat-cell *matCellDef="let element"> {{element.detalhe}} </td>
+        </ng-container>
+
+
+
+        <ng-container matColumnDef="opcoes">
+            <th mat-header-cell *matHeaderCellDef> Opções </th>
+            <td mat-cell *matCellDef="let element">
+
+                <button mat-icon-button title="Editar" (click)="editar(element)">
+                    <mat-icon aria-label="Botão de Edição">
+                        search
+                    </mat-icon>
+                </button>
+
+
+
+
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns02"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns02;"
+            (click)="selection02.toggle(row)"></tr>
+    </table>
+
+    <div fxFlexAlign="end" fxFlex="100">
+        <mat-paginator #paginator02 [pageSize]="5"
+                    [pageSizeOptions]="[5, 10, 20 , 50, 100]" fxFlexAlign="end">
+                </mat-paginator>
+    </div>
+</div>

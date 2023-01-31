@@ -15,6 +15,7 @@ import { NotificationsComponent } from '../../notifications/notifications.compon
 import { UpgradeComponent } from '../../upgrade/upgrade.component';
 import { InformacaoConsultarComponent } from 'app/informacao-consultar/informacao-consultar.component';
 import { CadastrarPessoasComponent } from 'app/pessoas/cadastrar-pessoas/cadastrar-pessoas.component';
+import { RelatorioInformacaoComponent } from 'app/relatorio/relatorio-informacao/relatorio-informacao.component';
 
 export const AdminLayoutRoutes: Routes = [
     // {
@@ -79,7 +80,7 @@ export const AdminLayoutRoutes: Routes = [
     { path: 'veiculo/consultar',        component: ConsultarVeiculosComponent },
     { path: 'veiculo/cadastrar',        component: CadastrarVeiculosComponent },
     { path: 'veiculo/editar/:id',        component: CadastrarVeiculosComponent },
-    
+    { path: 'relatorio/informacao',        component: RelatorioInformacaoComponent },
    
     
 ];

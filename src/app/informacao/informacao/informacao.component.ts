@@ -5,7 +5,7 @@ import { element } from 'protractor';
 import { NotificationUtil } from './../../util/NotificationUtil';
 import { InformacaoService } from './../../services/informacao.service';
 import { Informacao, Pessoa, Veiculo, Endereco, Arquivo, TipoFileDTO, TipoUrlFileDTO, InformacaoPessoa } from './../../models/models.dto';
-import { AfterViewInit, Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Inject, NgZone, OnInit, ViewChild } from '@angular/core';
 import { COMMA, ENTER, I, X } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
@@ -14,7 +14,7 @@ import { MarcadorMaps } from 'app/models/models.dto';
 import { AgmMap } from '@agm/core';
 import { google } from "google-maps";
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { delay, map, Observable, startWith } from 'rxjs';
+import { delay, map, Observable, startWith, take } from 'rxjs';
 import { NgxImageCompressService } from "ngx-image-compress";
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -24,6 +24,7 @@ import { DialogoComponent } from 'app/dialogo/dialogo.component';
 import { DialogoEditarTituloImagemComponent } from 'app/dialogo/dialogo-editar-titulo-imagem/dialogo-editar-titulo-imagem.component';
 import { ArquivoService } from 'app/services/arquivo.service';
 import { DOCUMENT } from '@angular/common';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 
 
 declare var google: google;
@@ -64,6 +65,9 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
   regiao: string = "";
   latMarcado = 0;
   lngMarcado = 0;
+
+  linhasTextArea: number = 15;
+  @ViewChild('autosize') autosize: CdkTextareaAutosize;
 
   editar: boolean = this.redirect.url.includes('editar');
   editarExisteMarcador = false;
@@ -113,12 +117,12 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
     private redirect: Router,
     private informacaoService: InformacaoService,
     private arquivoService: ArquivoService,
-    private sanitizer: DomSanitizer,
     private imageCompress: NgxImageCompressService,
     private marcadorService: MarcadorService,
     private dialog: MatDialog,
     private pessoaService: PessoaService,
-    @Inject(DOCUMENT) document: Document
+    @Inject(DOCUMENT) document: Document,
+    private _ngZone: NgZone
   ) { }
 
   ngOnInit(): void {
@@ -153,12 +157,12 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
 
     if ((value !== "" && value !== null && value !== undefined)
       &&
-      ( (value.nome !== "" && value.nome !== null && value.nome !== undefined) ||
-        (value.cpf !== "" && value.cpf !== null && value.cpf !== undefined)  ||
-        (value.pai !== "" && value.pai !== null && value.pai !== undefined)  ||
-        (value.mae !== "" && value.mae !== null && value.mae !== undefined)  ||
-        (value.apelido !== "" && value.apelido !== null && value.apelido !== undefined) 
-        )   
+      ((value.nome !== "" && value.nome !== null && value.nome !== undefined) ||
+        (value.cpf !== "" && value.cpf !== null && value.cpf !== undefined) ||
+        (value.pai !== "" && value.pai !== null && value.pai !== undefined) ||
+        (value.mae !== "" && value.mae !== null && value.mae !== undefined) ||
+        (value.apelido !== "" && value.apelido !== null && value.apelido !== undefined)
+      )
     ) {
       const filterValue: string = value.nome as string;
       const filterValueCpf: string = value.cpf as string;
@@ -237,7 +241,10 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
       this.router.params.subscribe(params => {
         this.informacaoService.getById(params.id).subscribe({
           next: (v) => {
-            console.log(v);
+          
+            this.linhasTextArea = Math.round(v.detalhe.length/150);
+            this.linhasTextArea = this.linhasTextArea + 2;
+
             this.informacaoDto = v;
             this.formulario.patchValue({
               id: v.id,
@@ -246,7 +253,7 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
             });
 
             if (v.informePessoas) {
-                v.informePessoas.forEach(element => {
+              v.informePessoas.forEach(element => {
                 this.pessoasLista.push(element.pessoa);
               });
 
@@ -850,6 +857,13 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
 
   get arquivos(): FormArray {
     return <FormArray>this.formulario.get('arquivos');
+  }
+
+  triggerResize() {
+    // Wait for changes to be applied, then trigger textarea resize.
+    this._ngZone.onStable.pipe(take(1)).subscribe(() => {this.autosize.resizeToFitContent(true)
+    });
+
   }
 
 }

@@ -24,6 +24,22 @@
                         <h4 class="card-title">Veículos</h4>
                         <p class="card-category">Novo veículo cadastrado em: </p>
                     </div>
+
+
+                    <div class="col-md-6" input-group>
+                        
+                        <div class="card-body">
+                            <legend>Pesquisar</legend>
+
+                            <input class="bg-white form-pesquisar form-control" matInput type="text"
+                                (keyup)="doFilter($event.target.value)"
+                                placeholder=" Digite aqui para pesquisar...    "
+                                [value]="palavraPesquisada"
+                                style="border-style: solid;
+                                border-width: 1px;">
+                        </div>
+                    </div>
+
                     <div class="table-responsive">
                         <table mat-table matSort [dataSource]="dataSourceVeiculo" class="table table-hover">
 

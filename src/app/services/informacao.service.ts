@@ -82,4 +82,13 @@ export class InformacaoService {
   getAllAnos(): Observable<Informacao[]> {
     return null;
   }
+
+  getInformacaoRelatorio(dto :FiltroPainelDTO): Observable<Informacao[]>{
+    const headers = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type':'application/json'
+    });
+    return this.http.post<Informacao[]>(this.urlResource + '/get-informacao-relatorio', dto , {headers}).pipe(catchError(this.handleError.bind(this)));
+
+  }
 }

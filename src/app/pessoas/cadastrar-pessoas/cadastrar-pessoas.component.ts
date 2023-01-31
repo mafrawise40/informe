@@ -76,12 +76,12 @@ export class CadastrarPessoasComponent implements OnInit {
             //carregando vinculos
             this.pessoaService.getVinculosPessoa(this.pessoa.id).subscribe({
               next: (vinculos) => {
-                if ( vinculos!== null && vinculos !== undefined) {
-                this.listVinculos = vinculos;
-                this.listVinculos.splice(this.listVinculos.findIndex(vinculo => vinculo.pessoa.id === this.pessoa.id), 1);
-                this.dataSourceVinculo = new MatTableDataSource<InformacaoPessoa>(this.listVinculos);
-                this.dataSourceVinculo.paginator = this.paginator;
-                this.dataSourceVinculo.paginator._intl.itemsPerPageLabel = 'Exibir';
+                if (vinculos !== null && vinculos !== undefined) {
+                  this.listVinculos = vinculos;
+                  this.listVinculos.splice(this.listVinculos.findIndex(vinculo => vinculo.pessoa.id === this.pessoa.id), 1);
+                  this.dataSourceVinculo = new MatTableDataSource<InformacaoPessoa>(this.listVinculos);
+                  this.dataSourceVinculo.paginator = this.paginator;
+                  this.dataSourceVinculo.paginator._intl.itemsPerPageLabel = 'Exibir';
                 }
               }, error: (e) => {
                 NotificationUtil.showNotification('top', 'right', 'Erro ao tentar consultar a informação. ', 4)
@@ -110,12 +110,12 @@ export class CadastrarPessoasComponent implements OnInit {
                         /*console.log("Foto convertida: " + imagem.descricao);
                         console.log("Antes: " + this.imageCompress.byteCount(objectURL));
                         console.log("Depois: " + this.imageCompress.byteCount(compressedImage));*/
-                        //this.arquivosImagensLazy.push(compressedImage);
-                    /*  }
-                    );
-                } else {
-                  arquivoImg.url = objectURL;
-                }*/
+                //this.arquivosImagensLazy.push(compressedImage);
+                /*  }
+                );
+            } else {
+              arquivoImg.url = objectURL;
+            }*/
 
                 arquivoImg.url = objectURL;
                 arquivoImg.id = imagem.id;
@@ -194,7 +194,8 @@ export class CadastrarPessoasComponent implements OnInit {
 
   processarSalvamento(dto: Pessoa, isEditar: boolean) {
 
-    this.pessoaService.save(dto, isEditar).subscribe({
+ 
+   this.pessoaService.save(dto, isEditar).subscribe({
       next: (v) => {
 
         if (this.arquivos.length > 0) {

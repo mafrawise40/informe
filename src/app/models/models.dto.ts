@@ -144,3 +144,17 @@ export class InformacaoPessoa extends BaseDTO {
   pessoa: Pessoa;
   envolvimento: string;
 }
+
+export class RelatorioInformacaoDTO extends BaseDTO {
+  data: Date;
+  informacao: number;
+  upm: any;
+  horario: string;
+  viatura: string;
+  odometroInicial: string;
+  odometroFinal: string;
+  ordemServico: string;
+  assuncao: string;
+  agentes: string;
+  termino: string;
+}
