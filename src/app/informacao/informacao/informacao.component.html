@@ -65,7 +65,7 @@
                                         <!-- <label>Título Resumido</label> -->
                                         <mat-form-field class="example-full-width">
                                             <input matInput placeholder="Título Resumido" name="titulo" id="titulo"
-                                                formControlName="titulo">
+                                                formControlName="titulo" maxlength="255">
                                         </mat-form-field>
                                     </div>
                                     <div class="col-md-3">
@@ -85,7 +85,7 @@
                                                 cdkTextareaAutosize
                                                 #autosize="cdkTextareaAutosize" 
                                                 cdkAutosizeMinRows="1"
-                                                cdkAutosizeMaxRows="50"></textarea>
+                                                cdkAutosizeMaxRows="50" maxlength="1000"></textarea>
                                         </mat-form-field>
 
                                     </div>
@@ -149,14 +149,14 @@
                                     <div class="col-md-6">
                                         <mat-form-field class="example-full-width">
                                             <input matInput placeholder="Endereço" name="endereco" id="endereco"
-                                                formControlName="endereco">
+                                                formControlName="endereco" maxlength="255">
                                         </mat-form-field>
                                     </div>
 
                                     <div class="col-md-6">
                                         <mat-form-field class="example-full-width">
                                             <input matInput placeholder="Região" name="regiao" id="regiao"
-                                                formControlName="regiao">
+                                                formControlName="regiao" maxlength="255">
                                         </mat-form-field>
                                     </div>
 
@@ -281,7 +281,7 @@
                                                 <mat-label>Nome da Pessoa</mat-label>
                                                 <input type="text" placeholder="Nome da pessoa"
                                                     aria-label="Nome da Pessoa" matInput formControlName="nome"
-                                                    [matAutocomplete]="auto">
+                                                    [matAutocomplete]="auto" maxlength="255">
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
                                                     <mat-option *ngFor="let option of filteredOptionsPessoas | async"
                                                         (click)="carregarValorNoForm(option);" [value]="option.nome">
@@ -300,7 +300,7 @@
                                             <mat-form-field class="example-full-width" appearance="fill">
                                                 <mat-label>Apelido</mat-label>
                                                 <input type="text" placeholder="Apelido" aria-label="Apelido" matInput
-                                                    formControlName="apelido" [matAutocomplete]="auto">
+                                                    formControlName="apelido" [matAutocomplete]="auto" maxlength="255">
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
                                                     <mat-option *ngFor="let option of filteredOptionsPessoas | async"
                                                         (click)="carregarValorNoForm(option);" [value]="option.nome">
@@ -319,7 +319,7 @@
                                             <mat-form-field class="" appearance="fill">
                                                 <mat-label>Pai</mat-label>
                                                 <input type="text" placeholder="Nome do Pai" aria-label="Nome do Pai"
-                                                    matInput formControlName="pai" [matAutocomplete]="auto">
+                                                    matInput formControlName="pai" [matAutocomplete]="auto" maxlength="255">
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
                                                     <mat-option *ngFor="let option of filteredOptionsPessoas | async"
                                                         (click)="carregarValorNoForm(option);" [value]="option.nome">
@@ -335,7 +335,7 @@
                                             <mat-form-field class="example-full-width" appearance="fill">
                                                 <mat-label>Mãe</mat-label>
                                                 <input type="text" placeholder="Nome da Mãe" aria-label="Nome da Mãe"
-                                                    matInput formControlName="mae" [matAutocomplete]="auto">
+                                                    matInput formControlName="mae" [matAutocomplete]="auto" maxlength="255">
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
                                                     <mat-option *ngFor="let option of filteredOptionsPessoas | async"
                                                         (click)="carregarValorNoForm(option);" [value]="option.nome">
@@ -358,7 +358,7 @@
                                                 <input mask="000.000.000-00" type="text" placeholder="Digite o CPF"
                                                     aria-label="Digite o CPF" matInput formControlName="cpf"
                                                     [matAutocomplete]="auto" [showMaskTyped]="true"
-                                                    [dropSpecialCharacters]="false">
+                                                    [dropSpecialCharacters]="false" maxlength="255">
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
                                                     <mat-option *ngFor="let option of filteredOptionsPessoas | async"
                                                         (click)="carregarValorNoForm(option);" [value]="option.nome">
@@ -377,7 +377,7 @@
                                                 <input mask="00/00/0000" type="text" placeholder="Data de Nascimento"
                                                     aria-label="Data de Nascimento" matInput
                                                     formControlName="nascimento" [showMaskTyped]="true"
-                                                    [dropSpecialCharacters]="false">
+                                                    [dropSpecialCharacters]="false" maxlength="255">
 
                                             </mat-form-field>
                                         </div>
@@ -390,7 +390,7 @@
                                                 <input type="text"
                                                     placeholder="Informação adicional sobre o envolvimento das pessoas"
                                                     aria-label="Informação adicional sobre o envolvimento das pessoas"
-                                                    matInput formControlName="envolvimento">
+                                                    matInput formControlName="envolvimento" maxlength="255">
 
                                             </mat-form-field>
                                         </div>
@@ -491,7 +491,7 @@
                                                 <mat-label>Placa</mat-label>
                                                 <input type="text" placeholder="Digite a placa do carro"
                                                     aria-label="Placa do Carro" matInput formControlName="placa"
-                                                    [matAutocomplete]="auto">
+                                                    [matAutocomplete]="auto" maxlength="255">
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
                                                     <mat-option *ngFor="let option of filteredOptions | async"
                                                         [value]="option">
@@ -506,7 +506,7 @@
                                         <div class="col-md-6">
                                             <mat-form-field class="example-full-width">
                                                 <input matInput placeholder="Descrição do veículo" name="descricao"
-                                                    id="descricao" formControlName="descricao">
+                                                    id="descricao" formControlName="descricao" maxlength="255">
                                             </mat-form-field>
                                         </div>
                                     </div>

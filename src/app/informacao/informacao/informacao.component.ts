@@ -419,18 +419,19 @@ export class InformacaoComponent implements OnInit, AfterViewInit {
 
   processarSalvamento() {
     this.informacaoService.save(this.informacaoDto, this.editar).subscribe({
-      next: (v) => {
+      next: (response) => {
 
         if (this.arquivos.length > 0) {
 
-          this.processarUpload(v);
+          this.processarUpload(response);
         }
 
         NotificationUtil.showNotification('top', 'right', 'Informação salva com sucesso.', 2)
         this.redirect.navigate(['informacao/consultar']);
       },
-      error: (e) => {
+      error: (erro) => {
         NotificationUtil.showNotification('top', 'right', 'Erro ao tentar salvar a informação. ', 4)
+        NotificationUtil.showNotification('top', 'right', erro.message, 4)
       },
       complete: () => { }
     });

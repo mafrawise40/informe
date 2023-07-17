@@ -11,3 +11,10 @@ Node.JS v14.21.2
 GoogleMaps
 
 Frontend construído em base de um template.
+
+
+Iniciando Projeto
+- npm install
+
+git:
+-branch principal é a master
