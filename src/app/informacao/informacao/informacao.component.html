@@ -81,10 +81,8 @@
                                         <mat-form-field class="Informação Completa">
                                             <textarea rows="{{linhasTextArea}}" matInput
                                                 placeholder="Escreva aqui toda a informação necessária" name="detalhe"
-                                                id="detalhe" formControlName="detalhe"  
-                                                cdkTextareaAutosize
-                                                #autosize="cdkTextareaAutosize" 
-                                                cdkAutosizeMinRows="1"
+                                                id="detalhe" formControlName="detalhe" cdkTextareaAutosize
+                                                #autosize="cdkTextareaAutosize" cdkAutosizeMinRows="1"
                                                 cdkAutosizeMaxRows="50" maxlength="1000"></textarea>
                                         </mat-form-field>
 
@@ -319,7 +317,8 @@
                                             <mat-form-field class="" appearance="fill">
                                                 <mat-label>Pai</mat-label>
                                                 <input type="text" placeholder="Nome do Pai" aria-label="Nome do Pai"
-                                                    matInput formControlName="pai" [matAutocomplete]="auto" maxlength="255">
+                                                    matInput formControlName="pai" [matAutocomplete]="auto"
+                                                    maxlength="255">
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
                                                     <mat-option *ngFor="let option of filteredOptionsPessoas | async"
                                                         (click)="carregarValorNoForm(option);" [value]="option.nome">
@@ -335,7 +334,8 @@
                                             <mat-form-field class="example-full-width" appearance="fill">
                                                 <mat-label>Mãe</mat-label>
                                                 <input type="text" placeholder="Nome da Mãe" aria-label="Nome da Mãe"
-                                                    matInput formControlName="mae" [matAutocomplete]="auto" maxlength="255">
+                                                    matInput formControlName="mae" [matAutocomplete]="auto"
+                                                    maxlength="255">
                                                 <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
                                                     <mat-option *ngFor="let option of filteredOptionsPessoas | async"
                                                         (click)="carregarValorNoForm(option);" [value]="option.nome">
@@ -587,7 +587,8 @@
                                             <div class="col-md-6">
                                                 <textarea row="2" formControlName="arquivoTitulo"
                                                     id="{{'arquivoTitulo'+i}}" type="text" class="form-control mb-4"
-                                                    placeholder="Digite a informação da foto" maxlength="255"></textarea>
+                                                    placeholder="Digite a informação da foto"
+                                                    maxlength="255"></textarea>
 
                                                 <button mat-raised-button (click)="removerImagem(i)"
                                                     title="Remover imagem" class="btn btn-danger pull-center">
