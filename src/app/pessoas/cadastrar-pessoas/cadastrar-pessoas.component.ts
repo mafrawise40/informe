@@ -183,6 +183,7 @@ export class CadastrarPessoasComponent implements OnInit {
       }
 
     } else {
+      NotificationUtil.showNotification('top', 'right', 'Campos obrigatórios não preenchidos.', 4)
 
     }
 
